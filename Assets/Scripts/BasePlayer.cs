@@ -20,6 +20,8 @@ public interface IRotatable
 
 public interface IPlayer : IMovable, IRotatable, IEnabable, IDisabable
 {
+    T GetController<T>() where T : class;
+
     void Initialize();
 }
 
@@ -32,6 +34,19 @@ public class BasePlayer : MonoBehaviour, IPlayer
     public Quaternion Rotation => _transform.rotation;
 
     private Transform _transform = null;
+
+    public T GetController<T>() where T : class
+    {
+        foreach (var controller in _controllers)
+        {
+            if (controller is T necessaryController)
+            { 
+                return necessaryController;
+            }
+        }
+
+        return null;
+    }
 
     //Заглушка
     private void Start()

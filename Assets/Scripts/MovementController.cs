@@ -1,24 +1,34 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public interface IMovmentController
-{ 
-    
+{
+    public event Action OnMoveEvent;   
+    public event Action OnStopEvent;   
 }
 
 public class MovementController : BasePlayerController, IMovmentController
 {
+    [Range(1f, 10f)]
     [SerializeField] private float _movementSpeed = 5f;
+
+    [Range(1f, 30f)]
     [SerializeField] private float _rotationSpeed = 5f;
+
+    public event Action OnMoveEvent;
+    public event Action OnStopEvent;
 
     private IPlayer _player = null;
     private IMovementInput _input = null;
 
     private Vector3 _normalizedDirection = Vector3.zero;
 
-    private Quaternion rotation = Quaternion.identity;
-    private Quaternion targetRotation = Quaternion.identity;
+    private Quaternion _rotation = Quaternion.identity;
+    private Quaternion _targetRotation = Quaternion.identity;
+
+    private bool _motionStateSwitchFlag = false;
 
     public override void Initialize(IPlayer player)
     {
@@ -45,18 +55,42 @@ public class MovementController : BasePlayerController, IMovmentController
     {
         _normalizedDirection = _input.GetDirectionByInput();
 
+        ProcessMotionStateEvents();
+
         ProcessRotation();
         ProcessMove();
+    }
+
+    private void ProcessMotionStateEvents()
+    {
+        if (_normalizedDirection != Vector3.zero)
+        {
+            if (_motionStateSwitchFlag == false)
+            {
+                _motionStateSwitchFlag = true;
+
+                OnMoveEvent?.Invoke();
+            }
+        }
+        else
+        {
+            if (_motionStateSwitchFlag)
+            {
+                _motionStateSwitchFlag = false;
+
+                OnStopEvent?.Invoke();
+            }
+        }
     }
 
     private void ProcessRotation()
     {
         if (_normalizedDirection.magnitude != 0f)
         {
-            rotation = Quaternion.LookRotation(_normalizedDirection);
-            targetRotation = Quaternion.Slerp(_player.Rotation, rotation, Time.deltaTime * _rotationSpeed);
+            _rotation = Quaternion.LookRotation(_normalizedDirection);
+            _targetRotation = Quaternion.Slerp(_player.Rotation, _rotation, Time.deltaTime * _rotationSpeed);
 
-            _player.Rotate(targetRotation);
+            _player.Rotate(_targetRotation);
         }
     }
     private void ProcessMove() => _player.Move(_normalizedDirection * _movementSpeed * Time.deltaTime);
@@ -68,7 +102,7 @@ public class MovementController : BasePlayerController, IMovmentController
 
         _normalizedDirection = Vector3.zero;
 
-        rotation = Quaternion.identity;
-        targetRotation = Quaternion.identity;
+        _rotation = Quaternion.identity;
+        _targetRotation = Quaternion.identity;
     }
 }
