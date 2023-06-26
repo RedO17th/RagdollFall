@@ -13,25 +13,25 @@ public class MovementController : BasePlayerController, IMovmentController
     [SerializeField] private float _rotationSpeed = 5f;
 
     private IPlayer _player = null;
+    private IMovementInput _input = null;
 
     private Vector3 _normalizedDirection = Vector3.zero;
 
     private Quaternion rotation = Quaternion.identity;
     private Quaternion targetRotation = Quaternion.identity;
 
-    private float _vertical = 0f;
-    private float _horizontal = 0f;
-
     public override void Initialize(IPlayer player)
     {
         _player = player;
+
+        _input = GetComponent<IMovementInput>();
     }
 
     public override void Enable()
     {
-        base.Enable();
-
         _player.EnableMovement();
+        
+        base.Enable();
     }
 
     public override void Disable()
@@ -43,13 +43,7 @@ public class MovementController : BasePlayerController, IMovmentController
 
     private void Update()
     {
-        //Обернуть в Input
-        _vertical = Input.GetAxis("Vertical");
-        _horizontal = Input.GetAxis("Horizontal");
-        //..
-
-        //Убрать и передавать в методы
-        _normalizedDirection = new Vector3(_horizontal, 0f, _vertical).normalized;
+        _normalizedDirection = _input.GetDirectionByInput();
 
         ProcessRotation();
         ProcessMove();
@@ -69,14 +63,12 @@ public class MovementController : BasePlayerController, IMovmentController
 
     public override void Clear()
     {
+        _input = null;
         _player = null;
 
         _normalizedDirection = Vector3.zero;
 
         rotation = Quaternion.identity;
         targetRotation = Quaternion.identity;
-
-        _vertical = 0f;
-        _horizontal = 0f;
     }
 }

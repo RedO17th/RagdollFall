@@ -34,7 +34,11 @@ public class BasePlayer : MonoBehaviour, IPlayer
     private Transform _transform = null;
 
     //Заглушка
-    private void Start() => Initialize();
+    private void Start()
+    {
+        Initialize();
+        Enable();
+    }
 
     //[TODO] Вызвать из вне
     public virtual void Initialize()
