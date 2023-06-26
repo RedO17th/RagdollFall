@@ -153,6 +153,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MaleBot
       objectReference: {fileID: 0}
+    - target: {fileID: 1615588816724148209, guid: f2d2f0aa447fea84d94f86537527e9fc, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 663a1c30d7d610740afeb6a5464ed8ec, type: 2}
     - target: {fileID: 2201218415409533902, guid: f2d2f0aa447fea84d94f86537527e9fc, type: 3}
       propertyPath: m_RootOrder
       value: 0

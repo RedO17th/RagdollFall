@@ -23,12 +23,12 @@ public class AnimationController : BasePlayerController
 
     private void ProcessMoveState()
     {
-        Debug.Log($"AnimationController.ProcessMoveState");
+        _animator.SetBool("Walking", true);
     }
 
     private void ProcessStopState()
     {
-        Debug.Log($"AnimationController.ProcessStopState");
+        _animator.SetBool("Walking", false);
     }
 
     public override void Disable()
