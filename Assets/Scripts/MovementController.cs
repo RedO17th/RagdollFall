@@ -20,7 +20,7 @@ public class MovementController : BasePlayerController, IMovmentController
     public event Action OnMoveEvent;
     public event Action OnStopEvent;
 
-    private IPlayer _player = null;
+    private BasePlayer _player = null;
     private IMovementInput _input = null;
 
     private Vector3 _normalizedDirection = Vector3.zero;
@@ -30,7 +30,7 @@ public class MovementController : BasePlayerController, IMovmentController
 
     private bool _motionStateSwitchFlag = false;
 
-    public override void Initialize(IPlayer player)
+    public override void Initialize(BasePlayer player)
     {
         _player = player;
 

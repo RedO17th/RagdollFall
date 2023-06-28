@@ -8,7 +8,7 @@ public class AnimationController : BasePlayerController
 
     private IMovmentController _movmentController = null;
 
-    public override void Initialize(IPlayer player)
+    public override void Initialize(BasePlayer player)
     {
         _movmentController = player.GetController<IMovmentController>();
     }

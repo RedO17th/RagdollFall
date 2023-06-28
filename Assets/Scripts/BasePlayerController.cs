@@ -20,7 +20,7 @@ public interface IClearableMemory
 
 public abstract class BasePlayerController : MonoBehaviour, IEnabable, IDisabable, IClearableMemory
 {
-    public abstract void Initialize(IPlayer player);
+    public abstract void Initialize(BasePlayer player);
 
     public virtual void Enable() => enabled = true;
     public virtual void Disable() => enabled = false;

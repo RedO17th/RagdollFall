@@ -1,31 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
-public interface IMovable
-{
-    void EnableMovement();
-    void DisableMovement();
-
-    void Move(Vector3 direction);
-}
-
-public interface IRotatable
-{
-    Quaternion Rotation { get; }
-    void Rotate(Quaternion rotation);
-}
-
-public interface IPlayer : IMovable, IRotatable, IEnabable, IDisabable
-{
-    T GetController<T>() where T : class;
-
-    void Initialize();
-}
-
-public class BasePlayer : MonoBehaviour, IPlayer
+public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
 {
     [SerializeField] private CharacterController _charController;
 
