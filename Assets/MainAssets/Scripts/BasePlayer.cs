@@ -159,24 +159,15 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
     //[TODO] Refactoring
     private void ProcessDeathState()
     {
-        var hipsPosition = _hipsTransform.position;
-
-        transform.position = hipsPosition;
-
-        if (Physics.Raycast(hipsPosition, Vector3.down, out RaycastHit hitInfo))
-        {
-            transform.position = new Vector3(hipsPosition.x, hitInfo.point.y, hipsPosition.z);
-        }
-
-        _hipsTransform.position = hipsPosition;
-
-        //Присутствует Offset, проверить
-        StartCoroutine(_ragdollController.ResetBonesRoutine());
-
-        //_animatorController.Enable();
-
-        //OnStandUp?.Invoke();
+        StartCoroutine(DeathRoutine());
     }
 
+    private IEnumerator DeathRoutine()
+    { 
+        yield return StartCoroutine(_ragdollController.ResetBonesRoutine());
 
+        _animatorController.Enable();
+
+        OnStandUp?.Invoke();
+    }
 }

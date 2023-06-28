@@ -89,6 +89,7 @@ public class RagdollController : BasePlayerController
 
             _playerIsFalling = false;
 
+            AlignPlayerByHips();
             PopulateBoneTransform(_ragdollBones);
 
             //А нужно ли... Или просто использовать SetState(PlayerState.Death);
@@ -116,6 +117,21 @@ public class RagdollController : BasePlayerController
     public BoneTransform[] _ragdollBones;
     public Transform[] _bones;
     public GameObject _viewGO;
+
+    private void AlignPlayerByHips()
+    {
+        var hipsPosition = _hipsRigidBody.transform.position;
+
+        transform.position = hipsPosition;
+
+        if (Physics.Raycast(hipsPosition, Vector3.down, out RaycastHit hitInfo))
+        {
+            transform.position = new Vector3(hipsPosition.x, hitInfo.point.y, hipsPosition.z);
+        }
+
+        _hipsRigidBody.transform.position = hipsPosition;
+
+    }
 
     private void PopulateBoneTransform(BoneTransform[] destination)
     {
@@ -171,8 +187,6 @@ public class RagdollController : BasePlayerController
 
             yield return null;
         }
-
-
     }
 }
 
