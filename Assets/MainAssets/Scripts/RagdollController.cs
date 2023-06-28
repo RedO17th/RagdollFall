@@ -19,6 +19,8 @@ public class RagdollController : BasePlayerController
 
     private BasePlayer _player = null;
 
+    private bool _playerIsFalling = false;
+
     public override void Initialize(BasePlayer player)
     {
         _player = player;
@@ -48,8 +50,29 @@ public class RagdollController : BasePlayerController
     private void Update() => CheckFallComplition();
     private void CheckFallComplition()
     {
-        if (_hipsRigidBody.velocity.magnitude <= 0f)
+        CheckFallBegin();
+
+        CheckFallEnd();
+    }
+
+    private void CheckFallBegin()
+    {
+        if (_playerIsFalling == false && _hipsRigidBody.velocity.magnitude >= 0.1f)
         {
+            _playerIsFalling = true;
+
+            Debug.Log($"RagdollController.CheckFallComplition: Начал падать");
+        }
+    }
+
+    private void CheckFallEnd()
+    {
+        if (_playerIsFalling && _hipsRigidBody.velocity.magnitude <= 0.05f)
+        {
+            Debug.Log($"RagdollController.CheckFallComplition: Упал");
+
+            _playerIsFalling = false;
+
             OnFallCompleted?.Invoke();
         }
     }
@@ -59,12 +82,6 @@ public class RagdollController : BasePlayerController
         base.Disable();
 
         _ragdollOperations.DisableRagdoll();
-
-        //..
-        //_animatorController.Enable();
-        //_movementController.Enable();
-
-        _player.SetPreviousState();
     }
 
     public override void Clear()

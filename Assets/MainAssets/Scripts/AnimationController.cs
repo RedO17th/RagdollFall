@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class AnimationController : BasePlayerController
 {
@@ -24,6 +25,8 @@ public class AnimationController : BasePlayerController
 
         _animator.enabled = true;
 
+        _player.OnStandUp += ProcessStandUp;
+
         _movementController.OnMoveEvent += ProcessMoveState;
         _movementController.OnStopEvent += ProcessStopState;
     }
@@ -31,10 +34,17 @@ public class AnimationController : BasePlayerController
     private void ProcessMoveState() => _animator.SetBool("Walking", true);
     private void ProcessStopState() => _animator.SetBool("Walking", false);
 
-    //private void ProcessStandUp() => _animator.SetTrigger("StandUp");
+    private void ProcessStandUp()
+    {
+        _animator.SetBool("Walking", false);
+
+        _animator.SetTrigger("StandUp");
+    }
 
     public override void Disable()
     {
+        _player.OnStandUp -= ProcessStandUp;
+
         _movementController.OnMoveEvent -= ProcessMoveState;
         _movementController.OnStopEvent -= ProcessStopState;
 

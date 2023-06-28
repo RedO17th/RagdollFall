@@ -1,8 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum PlayerState { None = -1, Normal, Fall }
+public enum PlayerState { None = -1, Normal, Fall, Death }
 
 public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
 {
@@ -10,13 +11,17 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
 
     [SerializeField] private BasePlayerController[] _controllers;
 
+    [SerializeField] private Transform _hipsTransform;
+    
+    public event Action OnStandUp;
+
     public Quaternion Rotation => _transform.rotation;
 
     public PlayerState CurrentState { get; private set; } = PlayerState.None;
 
-    private PlayerState _previousState = PlayerState.None;
-
     private RagdollController _ragdollController = null;
+    private AnimationController _animatorController = null;
+
     private Transform _transform = null;
 
     #region Systematic
@@ -37,14 +42,10 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
     {
         if (newState != CurrentState)
         {
-            _previousState = CurrentState;
-
             CurrentState = newState;
+
+            ProcessCurrentState();
         }
-    }
-    public void SetPreviousState()
-    {
-        CurrentState = _previousState;
     }
 
     #endregion
@@ -62,11 +63,12 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
         InitializeControllers();
 
         CurrentState = PlayerState.Normal;
-        _previousState = CurrentState;
+        //_previousState = CurrentState;
 
         _transform = GetComponent<Transform>();
 
         _ragdollController = GetController<RagdollController>();
+        _animatorController = GetController<AnimationController>();
     }
 
     protected virtual void InitializeControllers()
@@ -126,17 +128,50 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
         _ragdollController.Enable();
     }
 
-    private void ProcessFallCompletedEvent() => DisableRagdoll();
+    private void ProcessFallCompletedEvent()
+    {
+        Debug.Log($"BasePlayer");
+
+        DisableRagdoll();
+        SetState(PlayerState.Death);
+    }
+
     private void DisableRagdoll()
     {
         _ragdollController.Lock();
         _ragdollController.Disable();
-
-        Debug.Log($"BasePlayer: Fall complition");
-
-        //Обдумать включение Персонажа, так как запускаются остальные механики.
     }
 
     #endregion
 
+    private void ProcessCurrentState()
+    {
+        switch (CurrentState)
+        {
+            case PlayerState.Death:
+                {
+                    ProcessDeathState();
+                    break;
+                }
+        }
+    }
+
+    //[TODO] Refactoring
+    private void ProcessDeathState()
+    {
+        var hipsPosition = _hipsTransform.position;
+
+        transform.position = hipsPosition;
+
+        if (Physics.Raycast(hipsPosition, Vector3.down, out RaycastHit hitInfo))
+        {
+            transform.position = new Vector3(hipsPosition.x, hitInfo.point.y, hipsPosition.z);
+        }
+
+        _hipsTransform.position = hipsPosition;
+
+        _animatorController.Enable();
+
+        OnStandUp?.Invoke();
+    }
 }
