@@ -151,3 +151,7 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
 
 
 }
+
+//Заметки:
+//Присутствует оффсет, но скорее всего это из-за pivot'a анимации. Transform'ы костей
+//тянут меш к точке pivota самой анимации. Оффсет происходит только на анимации FaceUp

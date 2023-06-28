@@ -146,6 +146,9 @@ MonoBehaviour:
   _animator: {fileID: 4496122979337133153}
   _faceUpStandUpAName: StandUP_FaceUP
   _faceDownStandUpAName: StandUP_FaceDown
+  _walkingAName: Walking
+  _standUpUpTName: StandUpFaceUp
+  _standUpDTName: StandUpFaceDown
 --- !u!114 &4518632750759294444
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,6 +167,9 @@ MonoBehaviour:
   _hipsTransform: {fileID: 2654043081836324495}
   _hipsRigidBody: {fileID: 2878322539856207687}
   _ragdollOperations: {fileID: 4260309188769189486}
+  _hipsRayMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &5731436332698096176
 GameObject:
   m_ObjectHideFlags: 0

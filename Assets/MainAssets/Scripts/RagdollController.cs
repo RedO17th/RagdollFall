@@ -129,15 +129,15 @@ public class RagdollController : BasePlayerController
             _playerIsFalling = false;
 
             //Проверить корректность подсчетов
-            _isFaceUp = transform.forward.y > 0;
+            _isFaceUp = _hipsTransform.forward.y > 0;
 
             if (_isFaceUp)
             {
-                Debug.Log($"Up");
+                Debug.Log($"Up: value is {transform.forward.y} ");
             }
             else
             {
-                Debug.Log($"Down");
+                Debug.Log($"Down: value is {transform.forward.y} ");
             }
 
             AlignPlayerRotationByHips();
@@ -175,15 +175,24 @@ public class RagdollController : BasePlayerController
         return _player.Rotation * Quaternion.FromToRotation(transform.forward, desiredPosition);
     }
 
+    public LayerMask _hipsRayMask;
+
     private void AlignPlayerPositionByHips()
     {
         var hipsPosition = _hipsTransform.position;
 
-        //??
+        var posOffset = GetBoneTransforms()[0].Position;
+            posOffset.y = 0;
+            posOffset = _player.Rotation * posOffset;
 
-        if (Physics.Raycast(hipsPosition, Vector3.down, out RaycastHit hitInfo))
+        _player.SetPosition(_player.Position - posOffset);
+
+        if (Physics.Raycast(hipsPosition, Vector3.down, out RaycastHit hitInfo, 5f, ~_hipsRayMask))
         {
-            _player.SetPosition(new Vector3(hipsPosition.x, hitInfo.point.y, hipsPosition.z));
+            _player.SetPosition(new Vector3(_player.Position.x, hitInfo.point.y, _player.Position.z));
+            //_player.SetPosition(new Vector3(hipsPosition.x, hitInfo.point.y, hipsPosition.z));
+
+            Debug.Log($"AlignPlayerPositionByHips.y = { hitInfo.point.y }");
         }
 
         _hipsTransform.position = hipsPosition;
