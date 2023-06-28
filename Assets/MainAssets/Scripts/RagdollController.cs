@@ -19,8 +19,6 @@ public class RagdollController : BasePlayerController
     [SerializeField] private Rigidbody _hipsRigidBody;
     [SerializeField] private RagdollOperations _ragdollOperations;
 
-    public event Action OnFallCompleted;
-
     private MovementController _movementController = null;
     private AnimationController _animatorController = null;
 
@@ -87,10 +85,10 @@ public class RagdollController : BasePlayerController
     {
         if (_isLocked == false)
         {
-            _player.SetState(PlayerState.Fall);
-
             _movementController.Disable();
             _animatorController.Disable();
+
+            _player.SetState(PlayerState.Fall);
 
             _ragdollOperations.EnableRagdoll();
 
@@ -123,8 +121,7 @@ public class RagdollController : BasePlayerController
             AlignPlayerPivotByHips();
             SaveBoneTransformInto(_ragdollBones);
 
-            //А нужно ли... Или просто использовать SetState(PlayerState.Death);
-            OnFallCompleted?.Invoke();
+            _player.SetState(PlayerState.Death);
         }
     }
 

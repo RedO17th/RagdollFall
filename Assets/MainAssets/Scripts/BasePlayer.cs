@@ -8,11 +8,8 @@ public enum PlayerState { None = -1, Normal, Fall, Death }
 public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
 {
     [SerializeField] private CharacterController _charController;
-
     [SerializeField] private BasePlayerController[] _controllers;
 
-    [SerializeField] private Transform _hipsTransform;
-    
     public event Action OnStandUp;
 
     public PlayerState CurrentState { get; private set; } = PlayerState.None;
@@ -87,13 +84,7 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
     }
 
     //[TODO] Вызвать из вне
-    public virtual void Enable()
-    {
-        _ragdollController.OnFallCompleted += ProcessFallCompletedEvent;
-
-        EnableControllers();
-    }
-
+    public virtual void Enable() => EnableControllers();
     protected virtual void EnableControllers()
     {
         foreach (var controller in _controllers)
@@ -102,13 +93,44 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
         }
     }
 
-    //[TODO] Вызвать из вне
-    public void Disable()
+    public void EnableRagdoll()
     {
-        _ragdollController.OnFallCompleted -= ProcessFallCompletedEvent;
-
-        DisableControllers();
+        _ragdollController.Unlock();
+        _ragdollController.Enable();
     }
+
+    private void ProcessCurrentState()
+    {
+        switch (CurrentState)
+        {
+            case PlayerState.Death:
+                {
+                    DisableRagdoll();
+                    ProcessDeathState();
+                    break;
+                }
+        }
+    }
+
+    private void DisableRagdoll()
+    {
+        _ragdollController.Lock();
+        _ragdollController.Disable();
+    }
+
+    //[TODO] Refactoring
+    private void ProcessDeathState() => StartCoroutine(DeathRoutine());
+    private IEnumerator DeathRoutine()
+    {
+        yield return StartCoroutine(_ragdollController.ResetBonesRoutine());
+
+        _animatorController.Enable();
+
+        OnStandUp?.Invoke();
+    }
+
+    //[TODO] Вызвать из вне
+    public void Disable() => DisableControllers();
     protected virtual void DisableControllers()
     {
         foreach (var controller in _controllers)
@@ -127,52 +149,5 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
 
     #endregion
 
-    #region RagdollController
 
-    public void EnableRagdoll()
-    {
-        _ragdollController.Unlock();
-        _ragdollController.Enable();
-    }
-
-    private void ProcessFallCompletedEvent()
-    {
-        DisableRagdoll();
-        SetState(PlayerState.Death);
-    }
-
-    private void DisableRagdoll()
-    {
-        _ragdollController.Lock();
-        _ragdollController.Disable();
-    }
-
-    #endregion
-
-    private void ProcessCurrentState()
-    {
-        switch (CurrentState)
-        {
-            case PlayerState.Death:
-                {
-                    ProcessDeathState();
-                    break;
-                }
-        }
-    }
-
-    //[TODO] Refactoring
-    private void ProcessDeathState()
-    {
-        StartCoroutine(DeathRoutine());
-    }
-
-    private IEnumerator DeathRoutine()
-    { 
-        yield return StartCoroutine(_ragdollController.ResetBonesRoutine());
-
-        _animatorController.Enable();
-
-        OnStandUp?.Invoke();
-    }
 }
