@@ -10,7 +10,7 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
     [SerializeField] private CharacterController _charController;
     [SerializeField] private BasePlayerController[] _controllers;
 
-    public event Action OnStandUp;
+    public event Action<bool> OnStandUp;
 
     public PlayerState CurrentState { get; private set; } = PlayerState.None;
     public Vector3 Position => _transform.position;
@@ -126,7 +126,7 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
 
         _animatorController.Enable();
 
-        OnStandUp?.Invoke();
+        OnStandUp?.Invoke(_ragdollController.IsFaceUp);
     }
 
     //[TODO] Вызвать из вне

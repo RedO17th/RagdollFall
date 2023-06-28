@@ -8,6 +8,9 @@ public class AnimationController : BasePlayerController
 {
     [SerializeField] private Animator _animator;
 
+    [SerializeField] private string _faceUpStandUpAName;
+    [SerializeField] private string _faceDownStandUpAName;
+
     private IMovmentController _movementController = null;
 
     private BasePlayer _player = null;
@@ -34,15 +37,18 @@ public class AnimationController : BasePlayerController
     private void ProcessMoveState() => _animator.SetBool("Walking", true);
     private void ProcessStopState() => _animator.SetBool("Walking", false);
 
-    private void ProcessStandUp()
+    private void ProcessStandUp(bool isUp)
     {
         _animator.SetBool("Walking", false);
 
-        _animator.SetTrigger("StandUp");
+        var triggerName = isUp ? "StandUpFaceUp" : "StandUpFaceDown";
+
+        _animator.SetTrigger(triggerName);
     }
 
     //[TODO] Ref?
-    public AnimationClip ReturnStandUPClip() => ReturnAnimationClipByName("StandUP");
+    public AnimationClip ReturnStandUPFaceUPClip() => ReturnAnimationClipByName(_faceUpStandUpAName);
+    public AnimationClip ReturnStandUPDownClip() => ReturnAnimationClipByName(_faceDownStandUpAName);
 
     private AnimationClip ReturnAnimationClipByName(string name)
     {
