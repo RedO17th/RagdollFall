@@ -41,6 +41,25 @@ public class AnimationController : BasePlayerController
         _animator.SetTrigger("StandUp");
     }
 
+    //[TODO] Ref?
+    public AnimationClip ReturnStandUPClip() => ReturnAnimationClipByName("StandUP");
+
+    private AnimationClip ReturnAnimationClipByName(string name)
+    {
+        AnimationClip result = null;
+
+        foreach (var clip in _animator.runtimeAnimatorController.animationClips)
+        {
+            if (clip.name == name)
+            {
+                result = clip;
+                break;
+            }
+        }
+
+        return result;
+    }
+
     public override void Disable()
     {
         _player.OnStandUp -= ProcessStandUp;

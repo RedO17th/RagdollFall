@@ -158,6 +158,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isLocked: 1
+  _resetBoneTime: 0.5
+  _viewGO: {fileID: 7191840132684700833}
   _hipsRigidBody: {fileID: 2878322539856207687}
   _ragdollOperations: {fileID: 4260309188769189486}
 --- !u!1 &5731436332698096176
@@ -1042,7 +1044,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7586877179418183100, guid: 878e38f8f56fcf94d8eb56bd8ef84a74, type: 3}
   m_PrefabInstance: {fileID: 5932833057975733202}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 7191840132684700833}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 38623be4b91ce7d49899e0a6c1a0d9b0, type: 3}
@@ -1490,6 +1492,11 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.31997174, y: 0.31002808, z: 0.30000114}
   m_Center: {x: -0.000005230959, y: 0.06, z: -0.01}
+--- !u!1 &7191840132684700833 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3574490606716016499, guid: 878e38f8f56fcf94d8eb56bd8ef84a74, type: 3}
+  m_PrefabInstance: {fileID: 5932833057975733202}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7531528016319579675 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4238156527312506313, guid: 878e38f8f56fcf94d8eb56bd8ef84a74, type: 3}

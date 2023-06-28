@@ -15,9 +15,9 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
     
     public event Action OnStandUp;
 
-    public Quaternion Rotation => _transform.rotation;
-
     public PlayerState CurrentState { get; private set; } = PlayerState.None;
+    public Vector3 Position => _transform.position;
+    public Quaternion Rotation => _transform.rotation;
 
     private RagdollController _ragdollController = null;
     private AnimationController _animatorController = null;
@@ -38,6 +38,9 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
 
         return null;
     }
+
+    #endregion
+
     public void SetState(PlayerState newState)
     {
         if (newState != CurrentState)
@@ -48,7 +51,14 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
         }
     }
 
-    #endregion
+    public void SetPosition(Vector3 newPosition) => _transform.position = newPosition;
+    public void SetRotation(Quaternion newRotation) => _transform.rotation = newRotation;
+
+    //Заглушка
+    private void Awake()
+    {
+        _transform = GetComponent<Transform>();
+    }
 
     //Заглушка
     private void Start()
@@ -63,9 +73,6 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
         InitializeControllers();
 
         CurrentState = PlayerState.Normal;
-        //_previousState = CurrentState;
-
-        _transform = GetComponent<Transform>();
 
         _ragdollController = GetController<RagdollController>();
         _animatorController = GetController<AnimationController>();
@@ -130,8 +137,6 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
 
     private void ProcessFallCompletedEvent()
     {
-        Debug.Log($"BasePlayer.ProcessFallCompletedEvent");
-
         DisableRagdoll();
         SetState(PlayerState.Death);
     }

@@ -7,10 +7,14 @@ using UnityEngine;
 
 public class RagdollController : BasePlayerController
 {
-    [SerializeField] private Animator _animator;
 
     [Space]
     [SerializeField] private bool _isLocked = true;
+
+    [Range(0.05f, 2f)]
+    [SerializeField] private float _resetBoneTime = 1f;
+
+    [SerializeField] private GameObject _viewGO;
 
     [SerializeField] private Rigidbody _hipsRigidBody;
     [SerializeField] private RagdollOperations _ragdollOperations;
@@ -22,6 +26,10 @@ public class RagdollController : BasePlayerController
 
     private BasePlayer _player = null;
 
+    private BoneTransform[] _standUpAnimationBones;
+    private BoneTransform[] _ragdollBones;
+    private Transform[] _bones;
+
     private bool _playerIsFalling = false;
 
     public override void Initialize(BasePlayer player)
@@ -31,8 +39,14 @@ public class RagdollController : BasePlayerController
         _movementController = _player.GetController<MovementController>();
         _animatorController = _player.GetController<AnimationController>();
 
-        //..
+        InitializeBonesArrays();
+        SaveAnimationBonesTransformInto(_standUpAnimationBones);
+    }
+
+    private void InitializeBonesArrays()
+    {
         _bones = _hipsRigidBody.transform.GetComponentsInChildren<Transform>();
+
         _standUpAnimationBones = new BoneTransform[_bones.Length];
         _ragdollBones = new BoneTransform[_bones.Length];
 
@@ -41,8 +55,29 @@ public class RagdollController : BasePlayerController
             _standUpAnimationBones[i] = new BoneTransform();
             _ragdollBones[i] = new BoneTransform();
         }
+    }
 
-        PopulateAnimationBonesTransform(_standUpAnimationBones);
+    private void SaveAnimationBonesTransformInto(BoneTransform[] destination)
+    {
+        var positionBeforeSampling = _player.Position;
+        var rotationBeforeSampling = _player.Rotation;
+
+        var clip = _animatorController.ReturnStandUPClip();
+            clip.SampleAnimation(_viewGO, 0f);
+
+        SaveBoneTransformInto(destination);
+
+        _player.SetPosition(positionBeforeSampling);
+        _player.SetRotation(rotationBeforeSampling);
+    }
+
+    private void SaveBoneTransformInto(BoneTransform[] destination)
+    {
+        for (int i = 0; i < _bones.Length; i++)
+        {
+            destination[i].SetPosition(_bones[i].localPosition);
+            destination[i].SetRotation(_bones[i].localRotation);
+        }
     }
 
     public void Unlock() => _isLocked = false;
@@ -76,8 +111,6 @@ public class RagdollController : BasePlayerController
         if (_playerIsFalling == false && _hipsRigidBody.velocity.magnitude >= 0.2f)
         {
             _playerIsFalling = true;
-
-            Debug.Log($"RagdollController.CheckFallComplition: Начал падать");
         }
     }
 
@@ -85,21 +118,52 @@ public class RagdollController : BasePlayerController
     {
         if (_playerIsFalling && _hipsRigidBody.velocity.magnitude <= 0.05f)
         {
-            Debug.Log($"RagdollController.CheckFallComplition: Упал");
-
             _playerIsFalling = false;
 
-            AlignPlayerByHips();
-            PopulateBoneTransform(_ragdollBones);
+            AlignPlayerPivotByHips();
+            SaveBoneTransformInto(_ragdollBones);
 
             //А нужно ли... Или просто использовать SetState(PlayerState.Death);
             OnFallCompleted?.Invoke();
         }
     }
 
+    private void AlignPlayerPivotByHips()
+    {
+        var hipsPosition = _hipsRigidBody.transform.position;
+
+        if (Physics.Raycast(hipsPosition, Vector3.down, out RaycastHit hitInfo))
+        {
+            _player.SetPosition(new Vector3(hipsPosition.x, hitInfo.point.y, hipsPosition.z));
+        }
+
+        _hipsRigidBody.transform.position = hipsPosition;
+    }
+
+    public IEnumerator ResetBonesRoutine()
+    {
+        var percent = 0f;
+        var elapsedTime = 0f;
+
+        while (elapsedTime < _resetBoneTime)
+        {
+            for (int i = 0; i < _bones.Length; i++)
+            {
+                percent = elapsedTime / _resetBoneTime;
+
+                _bones[i].localPosition = Vector3.Lerp(_ragdollBones[i].Position, _standUpAnimationBones[i].Position, percent);
+                _bones[i].localRotation = Quaternion.Lerp(_ragdollBones[i].Rotation, _standUpAnimationBones[i].Rotation, percent);
+            }
+
+            elapsedTime += Time.deltaTime;
+
+            yield return null;
+        }
+    }
+
     public override void Disable()
     {
-        //base.Disable();
+        base.Disable();
 
         _ragdollOperations.DisableRagdoll();
     }
@@ -109,90 +173,10 @@ public class RagdollController : BasePlayerController
         _movementController = null;
         _animatorController = null;
 
+        _standUpAnimationBones = null;
+        _ragdollBones = null;
+        _bones = null;
+
         _player = null;
     }
-
-    //Bones question
-    public BoneTransform[] _standUpAnimationBones;
-    public BoneTransform[] _ragdollBones;
-    public Transform[] _bones;
-    public GameObject _viewGO;
-
-    private void AlignPlayerByHips()
-    {
-        var hipsPosition = _hipsRigidBody.transform.position;
-
-        transform.position = hipsPosition;
-
-        if (Physics.Raycast(hipsPosition, Vector3.down, out RaycastHit hitInfo))
-        {
-            transform.position = new Vector3(hipsPosition.x, hitInfo.point.y, hipsPosition.z);
-        }
-
-        _hipsRigidBody.transform.position = hipsPosition;
-
-    }
-
-    private void PopulateBoneTransform(BoneTransform[] destination)
-    {
-        for (int i = 0; i < _bones.Length; i++)
-        {
-            destination[i].Position = _bones[i].localPosition;
-            destination[i].Rotation = _bones[i].localRotation;
-        }
-    }
-
-    private void PopulateAnimationBonesTransform(BoneTransform[] destination)
-    {
-        var positionBeforeSampling = transform.position;
-        var rotationBeforeSampling = transform.rotation;
-
-        foreach (var clip in _animator.runtimeAnimatorController.animationClips)
-        {
-            if (clip.name == "StandUP")
-            {
-                Debug.Log($"RagdollController.PopulateAnimationBonesTransform: True ");
-
-                clip.SampleAnimation(_viewGO, 0f);
-
-                PopulateBoneTransform(destination);
-
-                break;
-            }
-        }
-
-        transform.position = positionBeforeSampling;
-        transform.rotation = rotationBeforeSampling;
-    }
-
-    public IEnumerator ResetBonesRoutine()
-    {
-        Debug.Log($"RagdollController.ResetBonesRoutine");
-
-        float t = 3f;
-        float etime = 0f;
-        float percent = 0f;
-
-        while (etime < t)
-        {
-            for (int i = 0; i < _bones.Length; i++)
-            {
-                percent = etime / t;
-
-                _bones[i].localPosition = Vector3.Lerp(_ragdollBones[i].Position, _standUpAnimationBones[i].Position, percent);
-                _bones[i].localRotation = Quaternion.Lerp(_ragdollBones[i].Rotation, _standUpAnimationBones[i].Rotation, percent);
-            }
-
-            etime += Time.deltaTime;
-
-            yield return null;
-        }
-    }
-}
-
-[System.Serializable]
-public class BoneTransform
-{
-    public Vector3 Position;
-    public Quaternion Rotation;
 }
