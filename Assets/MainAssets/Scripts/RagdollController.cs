@@ -16,6 +16,7 @@ public class RagdollController : BasePlayerController
 
     [SerializeField] private GameObject _viewGO;
 
+    [SerializeField] private Transform _hipsTransform;
     [SerializeField] private Rigidbody _hipsRigidBody;
     [SerializeField] private RagdollOperations _ragdollOperations;
 
@@ -117,24 +118,47 @@ public class RagdollController : BasePlayerController
         if (_playerIsFalling && _hipsRigidBody.velocity.magnitude <= 0.05f)
         {
             _playerIsFalling = false;
+            
+            AlignPlayerRotationByHips();
+            AlignPlayerPositionByHips();
 
-            AlignPlayerPivotByHips();
             SaveBoneTransformInto(_ragdollBones);
 
             _player.SetState(PlayerState.Death);
         }
     }
 
-    private void AlignPlayerPivotByHips()
+    private void AlignPlayerRotationByHips()
+    { 
+        var hipsPosition = _hipsTransform.position;
+        var hipsRotation = _hipsTransform.rotation;
+
+        _player.SetRotation(GetRotationToHips());
+
+        _hipsTransform.position = hipsPosition;
+        _hipsTransform.rotation = hipsRotation;
+    }
+    private Quaternion GetRotationToHips()
     {
-        var hipsPosition = _hipsRigidBody.transform.position;
+        var desiredPosition = _hipsTransform.up * -1;
+            desiredPosition.y = 0;
+            desiredPosition.Normalize();
+
+        return _player.Rotation * Quaternion.FromToRotation(transform.forward, desiredPosition);
+    }
+
+    private void AlignPlayerPositionByHips()
+    {
+        var hipsPosition = _hipsTransform.position;
+
+        //??
 
         if (Physics.Raycast(hipsPosition, Vector3.down, out RaycastHit hitInfo))
         {
             _player.SetPosition(new Vector3(hipsPosition.x, hitInfo.point.y, hipsPosition.z));
         }
 
-        _hipsRigidBody.transform.position = hipsPosition;
+        _hipsTransform.position = hipsPosition;
     }
 
     public IEnumerator ResetBonesRoutine()

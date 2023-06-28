@@ -105,7 +105,6 @@ MonoBehaviour:
   - {fileID: 5731436331932143619}
   - {fileID: 5731436331932143617}
   - {fileID: 4518632750759294444}
-  _hipsTransform: {fileID: 0}
 --- !u!114 &5731436331932143618
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -160,6 +159,7 @@ MonoBehaviour:
   _isLocked: 1
   _resetBoneTime: 0.5
   _viewGO: {fileID: 7191840132684700833}
+  _hipsTransform: {fileID: 2654043081836324495}
   _hipsRigidBody: {fileID: 2878322539856207687}
   _ragdollOperations: {fileID: 4260309188769189486}
 --- !u!1 &5731436332698096176
@@ -877,6 +877,11 @@ CharacterJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!4 &2654043081836324495 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8539007569513508189, guid: 878e38f8f56fcf94d8eb56bd8ef84a74, type: 3}
+  m_PrefabInstance: {fileID: 5932833057975733202}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &3229300487445318840 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9116815704802854762, guid: 878e38f8f56fcf94d8eb56bd8ef84a74, type: 3}
