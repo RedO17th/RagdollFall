@@ -105,6 +105,7 @@ MonoBehaviour:
   - {fileID: 5731436331932143619}
   - {fileID: 5731436331932143617}
   - {fileID: 4518632750759294444}
+  _hipsTransform: {fileID: 0}
 --- !u!114 &5731436331932143618
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -381,7 +382,7 @@ PrefabInstance:
     - target: {fileID: 7795968710099523507, guid: 878e38f8f56fcf94d8eb56bd8ef84a74, type: 3}
       propertyPath: m_Avatar
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 9000000, guid: d06c6daf23a64ae42b35951bfa390292, type: 3}
     - target: {fileID: 7795968710099523507, guid: 878e38f8f56fcf94d8eb56bd8ef84a74, type: 3}
       propertyPath: m_Controller
       value: 

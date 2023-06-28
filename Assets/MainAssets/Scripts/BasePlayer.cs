@@ -130,7 +130,7 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
 
     private void ProcessFallCompletedEvent()
     {
-        Debug.Log($"BasePlayer");
+        Debug.Log($"BasePlayer.ProcessFallCompletedEvent");
 
         DisableRagdoll();
         SetState(PlayerState.Death);
@@ -170,8 +170,13 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
 
         _hipsTransform.position = hipsPosition;
 
-        _animatorController.Enable();
+        //Присутствует Offset, проверить
+        StartCoroutine(_ragdollController.ResetBonesRoutine());
 
-        OnStandUp?.Invoke();
+        //_animatorController.Enable();
+
+        //OnStandUp?.Invoke();
     }
+
+
 }

@@ -253,6 +253,16 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &341611762 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7191840132684700833, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+  m_PrefabInstance: {fileID: 5731436331918126651}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &341611765 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 4496122979337133153, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+  m_PrefabInstance: {fileID: 5731436331918126651}
+  m_PrefabAsset: {fileID: 0}
 --- !u!54 &504142300 stripped
 Rigidbody:
   m_CorrespondingSourceObject: {fileID: 2878322539856207687, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
@@ -659,6 +669,18 @@ PrefabInstance:
       propertyPath: m_IsKinematic
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4496122979337133153, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+      propertyPath: m_WarningMessage
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4518632750759294444, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+      propertyPath: _viewGO
+      value: 
+      objectReference: {fileID: 341611762}
+    - target: {fileID: 4518632750759294444, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+      propertyPath: _animator
+      value: 
+      objectReference: {fileID: 341611765}
     - target: {fileID: 4518632750759294444, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
       propertyPath: _heapsRigidBody
       value: 
