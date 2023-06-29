@@ -31,7 +31,9 @@ public class CameraController : BasePlayerController
     {
         //_camera.position = _hipsLookTarget.position + _cameraOffset;
 
-        _camera.position = Vector3.Lerp(_camera.position, _hipsLookTarget.position + _cameraOffset, _movementSpeed * Time.deltaTime);
+        var targetPosition = _hipsLookTarget.position + _cameraOffset;
+
+        _camera.position = Vector3.Lerp(_camera.position, targetPosition, _movementSpeed * Time.deltaTime);
     }
 
     private void LookAtTarget()
