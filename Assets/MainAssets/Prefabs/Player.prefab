@@ -173,9 +173,8 @@ MonoBehaviour:
   _hipsTransform: {fileID: 2654043081836324495}
   _hipsRigidBody: {fileID: 2878322539856207687}
   _ragdollOperations: {fileID: 4260309188769189486}
-  _hipsRayMask:
-    serializedVersion: 2
-    m_Bits: 64
+  movementForce: 300
+  angularForce: 15
 --- !u!114 &5287352628459067827
 MonoBehaviour:
   m_ObjectHideFlags: 0

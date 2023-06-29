@@ -100,9 +100,7 @@ public class RagdollController : BasePlayerController
         if (_isLocked == false)
         {
             _movementController.Disable();
-            _animatorController.Disable();
-
-            _player.SetState(PlayerState.Fall);
+            _animatorController.Disable();  
 
             _ragdollOperations.EnableRagdoll();
 
@@ -110,7 +108,18 @@ public class RagdollController : BasePlayerController
         }
     }
 
-    private void Update() => CheckFallComplition();
+    private void Update()
+    {
+        CheckFallComplition();
+
+        if (_player.CurrentState == PlayerState.Fall)
+        {
+            ProcessFallMovement();
+        }
+    }
+
+    #region ChackFall
+
     private void CheckFallComplition()
     {
         CheckFallBegin();
@@ -123,6 +132,8 @@ public class RagdollController : BasePlayerController
         if (_playerIsFalling == false && _hipsRigidBody.velocity.magnitude >= _fallBeginTrashold)
         {
             _playerIsFalling = true;
+
+            _player.SetState(PlayerState.Fall);
         }
     }
 
@@ -190,6 +201,34 @@ public class RagdollController : BasePlayerController
     {
         return _isFaceUp ? _standUpFaceUpAnimationBones : _standUpFaceDownAnimationBones;
     }
+
+    #endregion
+
+    //[TODO] Refactoring:
+
+    #region FallMovement
+
+    [Range(100, 700)]
+    public float _movementForce = 300f;
+
+    [Range(10, 100)]
+    public float _angularForce = 10f;
+
+    private void ProcessFallMovement()
+    {
+        var horizontal = Input.GetAxis("Horizontal");
+        var vertical = Input.GetAxis("Vertical");
+
+        var movementVector = new Vector3(horizontal, 0f, 0f).normalized;
+        var torqueVector = new Vector3(0f, vertical, 0f).normalized;
+
+        _hipsRigidBody.AddForce(movementVector * _movementForce, ForceMode.Force);
+        _hipsRigidBody.AddTorque(torqueVector * _angularForce, ForceMode.Force);
+    }
+
+    #endregion
+
+    //..
 
     public IEnumerator ResetBonesRoutine()
     {
