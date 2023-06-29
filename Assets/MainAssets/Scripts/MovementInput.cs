@@ -17,6 +17,6 @@ public class MovementInput : MonoBehaviour, IMovementInput
         _vertical = Input.GetAxis("Vertical");
         _horizontal = Input.GetAxis("Horizontal");
 
-        return new Vector3(_horizontal, 0f, _vertical).normalized;
+        return new Vector3(_horizontal, 0f, _vertical).normalized * -1f;
     }
 }

@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 5731436331932143619}
   - component: {fileID: 5731436331932143617}
   - component: {fileID: 4518632750759294444}
+  - component: {fileID: 5287352628459067827}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -105,6 +106,7 @@ MonoBehaviour:
   - {fileID: 5731436331932143619}
   - {fileID: 5731436331932143617}
   - {fileID: 4518632750759294444}
+  - {fileID: 5287352628459067827}
 --- !u!114 &5731436331932143618
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -170,6 +172,22 @@ MonoBehaviour:
   _hipsRayMask:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &5287352628459067827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5731436331932143631}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f38a6c5b23a318545bb7decb451642c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _camera: {fileID: 0}
+  _hipsLookTarget: {fileID: 2654043081836324495}
+  _cameraOffset: {x: 0, y: 10, z: 10}
+  _lerpSpeed: 5
 --- !u!1 &5731436332698096176
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,6 +13,8 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
     public event Action<bool> OnStandUp;
 
     public PlayerState CurrentState { get; private set; } = PlayerState.None;
+    public Vector3 Forward => transform.forward;
+    
     public Vector3 Position => _transform.position;
     public Quaternion Rotation => _transform.rotation;
 
