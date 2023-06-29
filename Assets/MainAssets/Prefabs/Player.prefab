@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 5731436331932143617}
   - component: {fileID: 4518632750759294444}
   - component: {fileID: 5287352628459067827}
+  - component: {fileID: 2316810201667429}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -107,6 +108,7 @@ MonoBehaviour:
   - {fileID: 5731436331932143617}
   - {fileID: 4518632750759294444}
   - {fileID: 5287352628459067827}
+  - {fileID: 2316810201667429}
 --- !u!114 &5731436331932143618
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -187,7 +189,21 @@ MonoBehaviour:
   _camera: {fileID: 0}
   _hipsLookTarget: {fileID: 2654043081836324495}
   _cameraOffset: {x: 0, y: 10, z: 10}
-  _lerpSpeed: 5
+  _movementSpeed: 5
+--- !u!114 &2316810201667429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5731436331932143631}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c609080351490e41a20a5bb78c4641a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _limbs:
+  - {fileID: 0}
 --- !u!1 &5731436332698096176
 GameObject:
   m_ObjectHideFlags: 0
@@ -286,6 +302,10 @@ PrefabInstance:
     - target: {fileID: 7586877179418183100, guid: 878e38f8f56fcf94d8eb56bd8ef84a74, type: 3}
       propertyPath: rigidbodies.Array.size
       value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7586877179418183100, guid: 878e38f8f56fcf94d8eb56bd8ef84a74, type: 3}
+      propertyPath: rigidbodyInterpolation
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7586877179418183100, guid: 878e38f8f56fcf94d8eb56bd8ef84a74, type: 3}
       propertyPath: rigidbodies.Array.data[0]

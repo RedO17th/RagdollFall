@@ -618,6 +618,24 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1373846369}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1649112788 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 596933877391663764, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+  m_PrefabInstance: {fileID: 5731436331918126651}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1649112793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1649112788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3416d5564311b114cb4a580300ff23e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _price: 10
 --- !u!1 &1861429767
 GameObject:
   m_ObjectHideFlags: 0
@@ -683,6 +701,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2316810201667429, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+      propertyPath: _limbs.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2316810201667429, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+      propertyPath: _limbs.Array.data[0]
+      value: 
+      objectReference: {fileID: 1649112793}
+    - target: {fileID: 2316810201667429, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+      propertyPath: _limbs.Array.data[1]
+      value: 
+      objectReference: {fileID: 1649112793}
     - target: {fileID: 2295544716320794878, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
       propertyPath: m_UseGravity
       value: 0
@@ -769,6 +799,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5287352628459067827, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
       propertyPath: _camera
+      value: 
+      objectReference: {fileID: 1096722590}
+    - target: {fileID: 5287352628459067827, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+      propertyPath: _cameraTransform
       value: 
       objectReference: {fileID: 1096722591}
     - target: {fileID: 5507070072689993315, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
