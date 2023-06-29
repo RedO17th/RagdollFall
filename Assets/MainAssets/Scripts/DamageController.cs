@@ -34,13 +34,15 @@ public class DamageController : BasePlayerController
     {
         Debug.Log($"DamageController.Damege: Lomb price { _testLimb.Price }");
 
-        _cameraController.ShiftLookAt(_testLimb.Position);
+        _cameraController.ShiftLookAt(_testLimb.transform);
 
         //Time.timeScale = 0.1f;
 
-        yield return new WaitForSecondsRealtime(5f);
+        yield return new WaitForSecondsRealtime(8f);
 
         //Time.timeScale = 1f;
+
+        //_cameraController.SomeMeth();
     }
 
     public override void Clear()

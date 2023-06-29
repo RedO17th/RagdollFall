@@ -16,10 +16,10 @@ public class CameraController : BasePlayerController
 
     private BasePlayer _player = null;
 
-    private Vector3 _lookTargetPosition = Vector3.zero;
-    private Vector3 _previousLookTargetPosition = Vector3.zero;
+    private Transform _lookTargetPosition = null;
+    private Transform _previousLookTargetPosition = null;
 
-    private bool _lookTargetIsExist = false;
+    public bool _lookTargetIsExist = false;
 
     private Coroutine _shiftLookRoutine = null;
 
@@ -27,61 +27,74 @@ public class CameraController : BasePlayerController
     {
         _player = player;
 
-        _lookTargetPosition = _hipsLookTarget.position;
+        _lookTargetPosition = _hipsLookTarget;
     }
 
-    public void ShiftLookAt(Vector3 position)
+    public void ShiftLookAt(Transform target)
     {
         _lookTargetIsExist = true;
 
         _previousLookTargetPosition = _lookTargetPosition;
 
-        _lookTargetPosition = position;
+        _lookTargetPosition = target;
 
-        _shiftLookRoutine = StartCoroutine(ShiftLookRoutine());
+        if (_shiftLookRoutine != null)
+            StopCoroutine(_shiftLookRoutine);
+
+        _shiftLookRoutine = StartCoroutine(ShiftLookRoutine(3f, _previousLookTargetPosition.position, _lookTargetPosition.position, 60f, 5f));
     }
 
-    private IEnumerator ShiftLookRoutine()
+    private IEnumerator ShiftLookRoutine(float timeRoutine, Vector3 currentPosition, Vector3 targetPosition, float currentFOV, float targetFOV)
     {
-        var time = 3f;
         var percent = 0f;
         var elapsedTime = 0f;
 
-        var currentPosition = _previousLookTargetPosition;
-        var targetPosition = _lookTargetPosition;
-
-        var currentFOV = 60f;
-        var targetFOV = 5f;
-
-        while (elapsedTime < time) 
+        while (elapsedTime < timeRoutine) 
         {
-            percent = elapsedTime / time;
+            percent = elapsedTime / timeRoutine;
 
-            var newPosition = Vector3.Lerp(currentPosition, targetPosition, percent);
+            SetFOV(Mathf.Lerp(currentFOV, targetFOV, percent));
+            LookAtTarget(Vector3.Lerp(currentPosition, targetPosition, percent));
 
-            _cameraTransform.transform.LookAt(newPosition);
-
-            _camera.fieldOfView = Mathf.Lerp(currentFOV, targetFOV, percent);
-
-            //А время по всей видимости должно быть реальное...
-            elapsedTime += Time.deltaTime;
+            elapsedTime += Time.unscaledDeltaTime;
 
             yield return null;
         }
 
-        _camera.fieldOfView = targetFOV;
-        _cameraTransform.transform.LookAt(targetPosition);
+        SetFOV(targetFOV);
+        LookAtTarget(targetPosition);
+    }
+    private void LookAtTarget(Vector3 position) => _cameraTransform.transform.LookAt(position);
+    private void SetFOV(float fov) => _camera.fieldOfView = fov;
 
+    //public void SomeMeth()
+    //{
+    //    StartCoroutine(ShiftBackLookRoutine());
+    //}
+
+    private IEnumerator ShiftBackLookRoutine()
+    {
+        if (_shiftLookRoutine != null)
+            StopCoroutine(_shiftLookRoutine);
+
+        var currentPosition = _lookTargetPosition;
+        var targetPosition = _previousLookTargetPosition;
+
+        _shiftLookRoutine = StartCoroutine(ShiftLookRoutine(3f, currentPosition.position, targetPosition.position, 5f, 60f));
+
+        yield return _shiftLookRoutine;
+
+        _lookTargetPosition = targetPosition;
+        _lookTargetIsExist = false;
     }
 
     private void LateUpdate()
     {
         SetPositionToCamera();
 
-
         if (_lookTargetIsExist == false)
         {
-            NormalLookAtTarget();
+            LookAtTarget(_lookTargetPosition.position);
         }
     }
 
@@ -95,11 +108,7 @@ public class CameraController : BasePlayerController
         _cameraTransform.position = Vector3.Lerp(_cameraTransform.position, targetPosition, _movementSpeed * Time.deltaTime);
     }
 
-    private void NormalLookAtTarget()
-    {
-        _camera.fieldOfView = 60f;
-        _cameraTransform.transform.LookAt(_lookTargetPosition);
-    }
+
 
     public override void Clear()
     {
