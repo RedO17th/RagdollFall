@@ -5,8 +5,15 @@ using UnityEngine;
 
 public class CameraController : BasePlayerController
 {
+    [Header("Camera and settings")]
     [SerializeField] private Camera _camera;
+    [SerializeField] private float _minFOV = 5f;
+    [SerializeField] private float _maxFOV = 60f;
 
+    [Range(1f, 5f)]
+    [SerializeField] private float _shiftLookTime = 3f;
+
+    [Space]
     [SerializeField] private Transform _cameraTransform;
     [SerializeField] private Transform _hipsLookTarget;
     [SerializeField] private Vector3 _cameraOffset;
@@ -14,47 +21,43 @@ public class CameraController : BasePlayerController
     [Range(1f, 10f)]
     [SerializeField] private float _movementSpeed = 5f;
 
-    private BasePlayer _player = null;
+    private Coroutine _shiftLookToRoutine = null;
 
-    private Transform _lookTargetPosition = null;
-    private Transform _previousLookTargetPosition = null;
+    private bool _isShifting = false;
 
-    public bool _lookTargetIsExist = false;
-
-    private Coroutine _shiftLookRoutine = null;
+    private Transform _currentTarget = null;
+    private Transform _previousTarget = null;
+    private Transform _newTarget = null;
 
     public override void Initialize(BasePlayer player)
     {
-        _player = player;
-
-        _lookTargetPosition = _hipsLookTarget;
+        _currentTarget = _hipsLookTarget;
     }
 
-    public void ShiftLookAt(Transform target)
+    public void ShiftLookTo(Transform target)
     {
-        _lookTargetIsExist = true;
+        if (_shiftLookToRoutine != null)
+            StopCoroutine(_shiftLookToRoutine);
 
-        _previousLookTargetPosition = _lookTargetPosition;
+        _previousTarget = _currentTarget;
+        _newTarget = target;
 
-        _lookTargetPosition = target;
-
-        if (_shiftLookRoutine != null)
-            StopCoroutine(_shiftLookRoutine);
-
-        _shiftLookRoutine = StartCoroutine(ShiftLookRoutine(3f, _previousLookTargetPosition.position, _lookTargetPosition.position, 60f, 5f));
+        _shiftLookToRoutine = StartCoroutine(ShiftLookToRoutine(_maxFOV, _minFOV));
     }
 
-    private IEnumerator ShiftLookRoutine(float timeRoutine, Vector3 currentPosition, Vector3 targetPosition, float currentFOV, float targetFOV)
+    private IEnumerator ShiftLookToRoutine(float currentFOV, float targetFOV)
     {
+        _isShifting = true;
+
         var percent = 0f;
         var elapsedTime = 0f;
 
-        while (elapsedTime < timeRoutine) 
+        while (elapsedTime < _shiftLookTime) 
         {
-            percent = elapsedTime / timeRoutine;
+            percent = elapsedTime / _shiftLookTime;
 
             SetFOV(Mathf.Lerp(currentFOV, targetFOV, percent));
-            LookAtTarget(Vector3.Lerp(currentPosition, targetPosition, percent));
+            LookAtTarget(Vector3.Lerp(_currentTarget.position, _newTarget.position, percent));
 
             elapsedTime += Time.unscaledDeltaTime;
 
@@ -62,39 +65,31 @@ public class CameraController : BasePlayerController
         }
 
         SetFOV(targetFOV);
-        LookAtTarget(targetPosition);
+        LookAtTarget(_newTarget.position);
+
+        _currentTarget = _newTarget;
+        _isShifting = false;
     }
     private void LookAtTarget(Vector3 position) => _cameraTransform.transform.LookAt(position);
     private void SetFOV(float fov) => _camera.fieldOfView = fov;
 
-    //public void SomeMeth()
-    //{
-    //    StartCoroutine(ShiftBackLookRoutine());
-    //}
-
-    private IEnumerator ShiftBackLookRoutine()
+    public void ShiftLookBack()
     {
-        if (_shiftLookRoutine != null)
-            StopCoroutine(_shiftLookRoutine);
+        if (_shiftLookToRoutine != null)
+            StopCoroutine(_shiftLookToRoutine);
 
-        var currentPosition = _lookTargetPosition;
-        var targetPosition = _previousLookTargetPosition;
+        _newTarget = _previousTarget;
 
-        _shiftLookRoutine = StartCoroutine(ShiftLookRoutine(3f, currentPosition.position, targetPosition.position, 5f, 60f));
-
-        yield return _shiftLookRoutine;
-
-        _lookTargetPosition = targetPosition;
-        _lookTargetIsExist = false;
+        _shiftLookToRoutine = StartCoroutine(ShiftLookToRoutine(_minFOV, _maxFOV));
     }
 
     private void LateUpdate()
     {
         SetPositionToCamera();
 
-        if (_lookTargetIsExist == false)
+        if (_isShifting == false)
         {
-            LookAtTarget(_lookTargetPosition.position);
+            LookAtTarget(_currentTarget.position);
         }
     }
 
@@ -108,10 +103,14 @@ public class CameraController : BasePlayerController
         _cameraTransform.position = Vector3.Lerp(_cameraTransform.position, targetPosition, _movementSpeed * Time.deltaTime);
     }
 
-
-
     public override void Clear()
     {
-        _player = null;
+        //_player = null;
+
+        _shiftLookToRoutine = null;
+
+        _previousTarget = null;
+        _currentTarget = null;
+        _newTarget = null;
     }
 }

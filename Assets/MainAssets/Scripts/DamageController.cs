@@ -34,7 +34,7 @@ public class DamageController : BasePlayerController
     {
         Debug.Log($"DamageController.Damege: Lomb price { _testLimb.Price }");
 
-        _cameraController.ShiftLookAt(_testLimb.transform);
+        _cameraController.ShiftLookTo(_testLimb.transform);
 
         //Time.timeScale = 0.1f;
 
@@ -42,7 +42,7 @@ public class DamageController : BasePlayerController
 
         //Time.timeScale = 1f;
 
-        //_cameraController.SomeMeth();
+        _cameraController.ShiftLookBack();
     }
 
     public override void Clear()
