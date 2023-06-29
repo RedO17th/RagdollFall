@@ -182,7 +182,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 116731565}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: fd301446c35bd6a41940960aa8ae606b, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -797,6 +797,18 @@ PrefabInstance:
       propertyPath: _limbs.Array.data[4]
       value: 
       objectReference: {fileID: 2061094585}
+    - target: {fileID: 435769146357246758, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: fd301446c35bd6a41940960aa8ae606b, type: 2}
+    - target: {fileID: 1478593298073141344, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: fd301446c35bd6a41940960aa8ae606b, type: 2}
+    - target: {fileID: 2194499292770202010, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: fd301446c35bd6a41940960aa8ae606b, type: 2}
     - target: {fileID: 2295544716320794878, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
       propertyPath: m_UseGravity
       value: 0
@@ -837,6 +849,10 @@ PrefabInstance:
       propertyPath: m_IsKinematic
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3894494787076988152, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: fd301446c35bd6a41940960aa8ae606b, type: 2}
     - target: {fileID: 3967966715295825768, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
       propertyPath: m_UseGravity
       value: 0
@@ -865,6 +881,10 @@ PrefabInstance:
       propertyPath: _heapsRigidBody
       value: 
       objectReference: {fileID: 504142300}
+    - target: {fileID: 4588227985457163436, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: fd301446c35bd6a41940960aa8ae606b, type: 2}
     - target: {fileID: 4593729346431705591, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
       propertyPath: m_UseGravity
       value: 0
@@ -889,6 +909,10 @@ PrefabInstance:
       propertyPath: _cameraTransform
       value: 
       objectReference: {fileID: 1096722591}
+    - target: {fileID: 5432184521748407729, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: fd301446c35bd6a41940960aa8ae606b, type: 2}
     - target: {fileID: 5507070072689993315, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
       propertyPath: m_UseGravity
       value: 0
@@ -897,6 +921,10 @@ PrefabInstance:
       propertyPath: m_IsKinematic
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5564989676266155252, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: fd301446c35bd6a41940960aa8ae606b, type: 2}
     - target: {fileID: 5731436331932143629, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
       propertyPath: _hipsTransform
       value: 
@@ -925,6 +953,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 6159823605495823798, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: fd301446c35bd6a41940960aa8ae606b, type: 2}
+    - target: {fileID: 7138930343935281361, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: fd301446c35bd6a41940960aa8ae606b, type: 2}
     - target: {fileID: 7164227789215142714, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
       propertyPath: m_UseGravity
       value: 0
@@ -941,6 +977,14 @@ PrefabInstance:
       propertyPath: m_IsKinematic
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7353118510353114859, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: fd301446c35bd6a41940960aa8ae606b, type: 2}
+    - target: {fileID: 7413115815064190861, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: fd301446c35bd6a41940960aa8ae606b, type: 2}
     - target: {fileID: 7932570458561969662, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
       propertyPath: m_UseGravity
       value: 0
@@ -949,6 +993,10 @@ PrefabInstance:
       propertyPath: m_IsKinematic
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7941010642062587025, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: fd301446c35bd6a41940960aa8ae606b, type: 2}
     - target: {fileID: 8386641597387536479, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
       propertyPath: m_UseGravity
       value: 0
@@ -965,5 +1013,17 @@ PrefabInstance:
       propertyPath: m_IsKinematic
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8573714205002122712, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: fd301446c35bd6a41940960aa8ae606b, type: 2}
+    - target: {fileID: 8856111655862976261, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: fd301446c35bd6a41940960aa8ae606b, type: 2}
+    - target: {fileID: 9120558193998572885, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: fd301446c35bd6a41940960aa8ae606b, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 790aec5c915e402498f510cf4be0f786, type: 3}

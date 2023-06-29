@@ -183,15 +183,21 @@ public class RagdollController : BasePlayerController
     {
         var hipsPosition = _hipsTransform.position;
 
-        var posOffset = GetBoneTransforms()[0].Position;
-            posOffset.y = 0;
-            posOffset = _player.Rotation * posOffset;
+        #region Old
 
-        _player.SetPosition(_player.Position - posOffset);
+        //var posOffset = GetBoneTransforms()[0].Position;
+        //    posOffset.y = 0;
+        //    posOffset = _player.Rotation * posOffset;
+
+        //_player.SetPosition(_player.Position - posOffset);
+
+        #endregion
 
         if (Physics.Raycast(hipsPosition, Vector3.down, out RaycastHit hitInfo))
         {
-            _player.SetPosition(new Vector3(_player.Position.x, hitInfo.point.y, _player.Position.z));
+            //_player.SetPosition(new Vector3(_player.Position.x, hitInfo.point.y, _player.Position.z));
+            
+            _player.SetPosition(new Vector3(hipsPosition.x, hitInfo.point.y, hipsPosition.z));
         }
 
         _hipsTransform.position = hipsPosition;
@@ -211,6 +217,9 @@ public class RagdollController : BasePlayerController
     [Range(100, 700)]
     public float _movementForce = 300f;
 
+    [Range(1f, 21f)]
+    public float _maxMovementVelocity = 5f;
+
     [Range(10, 100)]
     public float _angularForce = 10f;
 
@@ -224,6 +233,11 @@ public class RagdollController : BasePlayerController
 
         _hipsRigidBody.AddForce(movementVector * _movementForce, ForceMode.Force);
         _hipsRigidBody.AddTorque(torqueVector * _angularForce, ForceMode.Force);
+
+        if (_hipsRigidBody.velocity.magnitude > _maxMovementVelocity)
+        {
+            _hipsRigidBody.velocity = Vector3.ClampMagnitude(_hipsRigidBody.velocity, _maxMovementVelocity);
+        }
     }
 
     #endregion

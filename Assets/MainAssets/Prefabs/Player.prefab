@@ -173,8 +173,9 @@ MonoBehaviour:
   _hipsTransform: {fileID: 2654043081836324495}
   _hipsRigidBody: {fileID: 2878322539856207687}
   _ragdollOperations: {fileID: 4260309188769189486}
-  movementForce: 300
-  angularForce: 15
+  _movementForce: 300
+  _maxMovementVelocity: 4.5
+  _angularForce: 10
 --- !u!114 &5287352628459067827
 MonoBehaviour:
   m_ObjectHideFlags: 0
