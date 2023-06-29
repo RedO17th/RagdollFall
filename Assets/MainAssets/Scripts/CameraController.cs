@@ -1,7 +1,8 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+
+public enum ShiftDirectionType { None = -1, Forward, Backward }
 
 public class CameraController : BasePlayerController
 {
@@ -21,6 +22,10 @@ public class CameraController : BasePlayerController
     [Range(1f, 10f)]
     [SerializeField] private float _movementSpeed = 5f;
 
+    public event Action<ShiftDirectionType> OnShiftCompleted;
+
+    private ShiftDirectionType _shiftDirection = ShiftDirectionType.None;
+
     private Coroutine _shiftLookToRoutine = null;
 
     private bool _isShifting = false;
@@ -34,11 +39,32 @@ public class CameraController : BasePlayerController
         _currentTarget = _hipsLookTarget;
     }
 
+    private void LateUpdate()
+    {
+        SetPositionToCamera();
+
+        if (_isShifting == false)
+        {
+            LookAtTarget(_currentTarget.position);
+        }
+    }
+
+    //[??] Normal or Lerp?
+    private void SetPositionToCamera()
+    {
+        //_camera.position = _hipsLookTarget.position + _cameraOffset;
+
+        var targetPosition = _hipsLookTarget.position + _cameraOffset;
+
+        _cameraTransform.position = Vector3.Lerp(_cameraTransform.position, targetPosition, _movementSpeed * Time.deltaTime);
+    }
+
     public void ShiftLookTo(Transform target)
     {
         if (_shiftLookToRoutine != null)
             StopCoroutine(_shiftLookToRoutine);
 
+        _shiftDirection = ShiftDirectionType.Forward;
         _previousTarget = _currentTarget;
         _newTarget = target;
 
@@ -69,6 +95,8 @@ public class CameraController : BasePlayerController
 
         _currentTarget = _newTarget;
         _isShifting = false;
+
+        OnShiftCompleted?.Invoke(_shiftDirection);
     }
     private void LookAtTarget(Vector3 position) => _cameraTransform.transform.LookAt(position);
     private void SetFOV(float fov) => _camera.fieldOfView = fov;
@@ -78,34 +106,18 @@ public class CameraController : BasePlayerController
         if (_shiftLookToRoutine != null)
             StopCoroutine(_shiftLookToRoutine);
 
+        _shiftDirection = ShiftDirectionType.Backward;
         _newTarget = _previousTarget;
 
         _shiftLookToRoutine = StartCoroutine(ShiftLookToRoutine(_minFOV, _maxFOV));
     }
 
-    private void LateUpdate()
-    {
-        SetPositionToCamera();
-
-        if (_isShifting == false)
-        {
-            LookAtTarget(_currentTarget.position);
-        }
-    }
-
-    //[??] Normal or Lerp?
-    private void SetPositionToCamera()
-    {
-        //_camera.position = _hipsLookTarget.position + _cameraOffset;
-
-        var targetPosition = _hipsLookTarget.position + _cameraOffset;
-
-        _cameraTransform.position = Vector3.Lerp(_cameraTransform.position, targetPosition, _movementSpeed * Time.deltaTime);
-    }
-
     public override void Clear()
     {
-        //_player = null;
+        if(_shiftLookToRoutine != null)
+        {
+            StopCoroutine(_shiftLookToRoutine);
+        }
 
         _shiftLookToRoutine = null;
 

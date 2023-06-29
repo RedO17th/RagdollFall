@@ -123,6 +123,24 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &27603094 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7859001069056402358, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+  m_PrefabInstance: {fileID: 5731436331918126651}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &27603099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27603094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3416d5564311b114cb4a580300ff23e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _price: 5
 --- !u!1 &116731565
 GameObject:
   m_ObjectHideFlags: 0
@@ -618,6 +636,42 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1373846369}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1387531523 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6467882042436269243, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+  m_PrefabInstance: {fileID: 5731436331918126651}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1387531528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1387531523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3416d5564311b114cb4a580300ff23e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _price: 3
+--- !u!1 &1632612982 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1535901191775720563, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+  m_PrefabInstance: {fileID: 5731436331918126651}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1632612987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1632612982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3416d5564311b114cb4a580300ff23e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _price: 5
 --- !u!1 &1649112788 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 596933877391663764, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
@@ -694,6 +748,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a77dcf01004ac7a44be35177f85ffdab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2061094580 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1511214601553747471, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+  m_PrefabInstance: {fileID: 5731436331918126651}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2061094585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2061094580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3416d5564311b114cb4a580300ff23e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _price: 3
 --- !u!1001 &5731436331918126651
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -703,7 +775,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2316810201667429, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
       propertyPath: _limbs.Array.size
-      value: 1
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2316810201667429, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
       propertyPath: _limbs.Array.data[0]
@@ -712,7 +784,19 @@ PrefabInstance:
     - target: {fileID: 2316810201667429, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
       propertyPath: _limbs.Array.data[1]
       value: 
-      objectReference: {fileID: 1649112793}
+      objectReference: {fileID: 1632612987}
+    - target: {fileID: 2316810201667429, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+      propertyPath: _limbs.Array.data[2]
+      value: 
+      objectReference: {fileID: 1387531528}
+    - target: {fileID: 2316810201667429, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+      propertyPath: _limbs.Array.data[3]
+      value: 
+      objectReference: {fileID: 27603099}
+    - target: {fileID: 2316810201667429, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
+      propertyPath: _limbs.Array.data[4]
+      value: 
+      objectReference: {fileID: 2061094585}
     - target: {fileID: 2295544716320794878, guid: 790aec5c915e402498f510cf4be0f786, type: 3}
       propertyPath: m_UseGravity
       value: 0

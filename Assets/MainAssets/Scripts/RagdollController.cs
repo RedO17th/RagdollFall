@@ -7,6 +7,10 @@ using UnityEngine;
 
 public class RagdollController : BasePlayerController
 {
+    [Range(0.05f, 0.5f)]
+    [SerializeField] private float _fallBeginTrashold = 0.2f;
+    [Range(0.01f, 0.1f)]
+    [SerializeField] private float _fallEndTrashold = 0.03f;
 
     [Space]
     [SerializeField] private bool _isLocked = true;
@@ -116,7 +120,7 @@ public class RagdollController : BasePlayerController
 
     private void CheckFallBegin()
     {
-        if (_playerIsFalling == false && _hipsRigidBody.velocity.magnitude >= 0.2f)
+        if (_playerIsFalling == false && _hipsRigidBody.velocity.magnitude >= _fallBeginTrashold)
         {
             _playerIsFalling = true;
         }
@@ -124,7 +128,7 @@ public class RagdollController : BasePlayerController
 
     private void CheckFallEnd()
     {
-        if (_playerIsFalling && _hipsRigidBody.velocity.magnitude <= 0.05f)
+        if (_playerIsFalling && _hipsRigidBody.velocity.magnitude <= _fallEndTrashold)
         {
             _playerIsFalling = false;
 
@@ -163,8 +167,6 @@ public class RagdollController : BasePlayerController
 
         return _player.Rotation * Quaternion.FromToRotation(_player.Forward, desiredPosition);
     }
-
-    public LayerMask _hipsRayMask;
 
     private void AlignPlayerPositionByHips()
     {

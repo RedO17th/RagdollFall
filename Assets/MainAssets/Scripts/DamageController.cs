@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class DamageController : BasePlayerController
 {
+    [Range(1f, 10f)]
+    [SerializeField] private float _mechanicTime = 1f;
+
     [SerializeField] private BaseLimb[] _limbs;
 
     private CameraController _cameraController = null;
@@ -14,39 +18,83 @@ public class DamageController : BasePlayerController
     {
         _cameraController = player.GetController<CameraController>();
 
-        _testLimb = _limbs[0];
+
     }
 
+    public override void Enable()
+    {
+        base.Enable();
+
+        _cameraController.OnShiftCompleted += ProcessCameraShiftingDirection;
+
+        SubscribeLimbs();
+    }
+    private void SubscribeLimbs()
+    {
+        foreach (var limb in _limbs)
+        {
+            limb.OnCollided += ProcessLimbsCollision;
+        }
+    }
+
+    public override void Disable()
+    {
+        _cameraController.OnShiftCompleted -= ProcessCameraShiftingDirection;
+
+        UnSubscribeLimbs();
+
+        base.Disable();
+    }
+    private void UnSubscribeLimbs()
+    {
+        foreach (var limb in _limbs)
+        {
+            limb.OnCollided -= ProcessLimbsCollision;
+        }
+    }
+
+    //[Test] Remove
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            TestCollision();
+            _testLimb = _limbs[Random.Range(0, _limbs.Length)];
+
+            ShowDamagedLimb();
         }
     }
 
-    private void TestCollision()
+    private void ProcessLimbsCollision() => ShowDamagedLimb();
+    private void ShowDamagedLimb()
     {
-        StartCoroutine(Routine());
+        SetTimeScale(0.1f);
+
+        StartCoroutine(ShowLimbRoutine());
     }
 
-    private IEnumerator Routine()
-    {
-        Debug.Log($"DamageController.Damege: Lomb price { _testLimb.Price }");
+    private void SetTimeScale(float value) => Time.timeScale = value;
 
+    private IEnumerator ShowLimbRoutine()
+    {
         _cameraController.ShiftLookTo(_testLimb.transform);
 
-        //Time.timeScale = 0.1f;
-
-        yield return new WaitForSecondsRealtime(8f);
-
-        //Time.timeScale = 1f;
+        yield return new WaitForSecondsRealtime(_mechanicTime);
 
         _cameraController.ShiftLookBack();
     }
 
+    //[TODO] Refactoring
+    private void ProcessCameraShiftingDirection(ShiftDirectionType direction)
+    {
+        if (direction == ShiftDirectionType.Backward)
+        {
+            SetTimeScale(1f);
+        }
+    }
+
+
     public override void Clear()
     {
-        
+        _cameraController = null;
     }
 }
