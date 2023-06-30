@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.CullingGroup;
 
 public enum PlayerState { None = -1, Normal, Fall, Death }
 
@@ -9,6 +10,8 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
 {
     [SerializeField] private CharacterController _charController;
     [SerializeField] private BasePlayerController[] _controllers;
+
+    public event Action<PlayerState> OnStateChanged;
 
     public event Action<bool> OnStandUp;
 
@@ -44,6 +47,8 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
         if (newState != CurrentState)
         {
             CurrentState = newState;
+
+            OnStateChanged?.Invoke(CurrentState);
 
             ProcessCurrentState();
         }

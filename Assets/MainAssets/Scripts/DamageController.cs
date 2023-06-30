@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class DamageController : BasePlayerController
@@ -10,61 +8,82 @@ public class DamageController : BasePlayerController
 
     [SerializeField] private BaseLimb[] _limbs;
 
+    private BasePlayer _player = null;
+
     private CameraController _cameraController = null;
 
-    private BaseLimb _testLimb = null;
+    private BaseLimb _currentDamagedLimb = null;
 
     public override void Initialize(BasePlayer player)
     {
-        _cameraController = player.GetController<CameraController>();
+        _player = player;
 
+        _cameraController = _player.GetController<CameraController>();
 
+        LimbsInitialize();
+    }
+
+    private void LimbsInitialize()
+    {
+        foreach (var limb in _limbs)
+        {
+            limb.Initialize();
+        }
     }
 
     public override void Enable()
     {
         base.Enable();
 
-        _cameraController.OnShiftCompleted += ProcessCameraShiftingDirection;
+        _player.OnStateChanged += ProcessPlayerStates;
 
-        SubscribeLimbs();
-    }
-    private void SubscribeLimbs()
-    {
-        foreach (var limb in _limbs)
-        {
-            limb.OnCollided += ProcessLimbsCollision;
-        }
+        _cameraController.OnShiftCompleted += ProcessCameraShiftingDirection;
     }
 
     public override void Disable()
     {
-        _cameraController.OnShiftCompleted -= ProcessCameraShiftingDirection;
+        _player.OnStateChanged -= ProcessPlayerStates;
 
-        UnSubscribeLimbs();
+        _cameraController.OnShiftCompleted -= ProcessCameraShiftingDirection;
 
         base.Disable();
     }
-    private void UnSubscribeLimbs()
+
+    private void ProcessPlayerStates(PlayerState state)
+    {
+        if (state == PlayerState.Fall)
+        {
+            ProcessPlayerFallState();
+        }
+
+        if (state == PlayerState.Death)
+        {
+            ProcessPlayerDeathState();
+        }
+    }
+
+    private void ProcessPlayerFallState() => EnableLimbs();
+    private void ProcessPlayerDeathState() => DisableLimbs();
+
+    private void ProcessLimbsCollision(BaseLimb damagedLimb)
+    {
+        _currentDamagedLimb = damagedLimb;
+
+        Debug.Log($"DamageController: Limb {_currentDamagedLimb.gameObject.name}, price = {_currentDamagedLimb.Price} ");
+
+        DisableLimbs();
+
+        ShowDamagedLimb();
+    }
+    private void DisableLimbs()
     {
         foreach (var limb in _limbs)
         {
             limb.OnCollided -= ProcessLimbsCollision;
+            limb.Disable();
         }
     }
 
-    //[Test] Remove
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            _testLimb = _limbs[Random.Range(0, _limbs.Length)];
-
-            ShowDamagedLimb();
-        }
-    }
-
-    private void ProcessLimbsCollision() => ShowDamagedLimb();
     private void ShowDamagedLimb()
     {
         SetTimeScale(0.1f);
@@ -76,11 +95,22 @@ public class DamageController : BasePlayerController
 
     private IEnumerator ShowLimbRoutine()
     {
-        _cameraController.ShiftLookTo(_testLimb.transform);
+        _cameraController.ShiftLookTo(_currentDamagedLimb.transform);
 
         yield return new WaitForSecondsRealtime(_mechanicTime);
 
         _cameraController.ShiftLookBack();
+
+        EnableLimbs();
+    }
+
+    private void EnableLimbs()
+    {
+        foreach (var limb in _limbs)
+        {
+            limb.Enable();
+            limb.OnCollided += ProcessLimbsCollision;
+        }
     }
 
     //[TODO] Refactoring
@@ -92,9 +122,10 @@ public class DamageController : BasePlayerController
         }
     }
 
-
     public override void Clear()
     {
+        _currentDamagedLimb = null;
         _cameraController = null;
+        _player = null;
     }
 }
