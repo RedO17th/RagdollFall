@@ -189,6 +189,10 @@ MonoBehaviour:
   _movementForce: 80
   _maxMovementVelocity: 6
   _angularForce: 10
+  _hitMask:
+    serializedVersion: 2
+    m_Bits: 64
+  _rayDistance: 1
 --- !u!114 &5287352628459067827
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -328,7 +332,15 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7586877179418183100, guid: 878e38f8f56fcf94d8eb56bd8ef84a74, type: 3}
+      propertyPath: solverIterations
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 7586877179418183100, guid: 878e38f8f56fcf94d8eb56bd8ef84a74, type: 3}
       propertyPath: applyMassSettings
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7586877179418183100, guid: 878e38f8f56fcf94d8eb56bd8ef84a74, type: 3}
+      propertyPath: applySolverIterations
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7586877179418183100, guid: 878e38f8f56fcf94d8eb56bd8ef84a74, type: 3}
@@ -338,6 +350,10 @@ PrefabInstance:
     - target: {fileID: 7586877179418183100, guid: 878e38f8f56fcf94d8eb56bd8ef84a74, type: 3}
       propertyPath: rigidbodyInterpolation
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7586877179418183100, guid: 878e38f8f56fcf94d8eb56bd8ef84a74, type: 3}
+      propertyPath: solverVelocityIterations
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7586877179418183100, guid: 878e38f8f56fcf94d8eb56bd8ef84a74, type: 3}
       propertyPath: rigidbodies.Array.data[0]

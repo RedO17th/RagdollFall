@@ -32,6 +32,9 @@ public class RagdollController : BasePlayerController
     [Range(5, 100)]
     [SerializeField] private float _angularForce = 10f;
 
+    [SerializeField] private LayerMask _hitMask;
+    [SerializeField] private float _rayDistance = 1f;
+
     public bool IsFaceUp => _isFaceUp;
 
     private RagdollFallInput _movementInput = null;
@@ -205,7 +208,7 @@ public class RagdollController : BasePlayerController
 
         #endregion
 
-        if (Physics.Raycast(hipsPosition, Vector3.down, out RaycastHit hitInfo))
+        if (Physics.Raycast(hipsPosition, Vector3.down, out RaycastHit hitInfo, _rayDistance, _hitMask))
         {
             //_player.SetPosition(new Vector3(_player.Position.x, hitInfo.point.y, _player.Position.z));
             
