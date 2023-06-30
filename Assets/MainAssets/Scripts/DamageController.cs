@@ -1,18 +1,24 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class DamageController : BasePlayerController
 {
-    [Range(1f, 10f)]
+    [Range(1f, 15f)]
     [SerializeField] private float _mechanicTime = 1f;
 
     [SerializeField] private BaseLimb[] _limbs;
+
+    public event Action<bool> OnDamageShown; 
+
+    public bool IsDamageShown { get; private set; } = false;
 
     private BasePlayer _player = null;
 
     private CameraController _cameraController = null;
 
     private BaseLimb _currentDamagedLimb = null;
+
 
     public override void Initialize(BasePlayer player)
     {
@@ -67,6 +73,8 @@ public class DamageController : BasePlayerController
 
     private void ProcessLimbsCollision(BaseLimb damagedLimb)
     {
+        IsDamageShown = true;
+
         _currentDamagedLimb = damagedLimb;
 
         Debug.Log($"DamageController: Limb {_currentDamagedLimb.gameObject.name}, price = {_currentDamagedLimb.Price} ");
@@ -102,6 +110,10 @@ public class DamageController : BasePlayerController
         _cameraController.ShiftLookBack();
 
         EnableLimbs();
+
+        IsDamageShown = false;
+
+        OnDamageShown?.Invoke(IsDamageShown);
     }
 
     private void EnableLimbs()

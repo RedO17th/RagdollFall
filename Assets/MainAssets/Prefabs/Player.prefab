@@ -221,7 +221,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c609080351490e41a20a5bb78c4641a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mechanicTime: 8
+  _mechanicTime: 6
   _limbs:
   - {fileID: 2185720890019074162}
   - {fileID: 3720381648297991407}

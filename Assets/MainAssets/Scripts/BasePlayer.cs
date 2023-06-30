@@ -20,6 +20,7 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
     public Vector3 Position => _transform.position;
     public Quaternion Rotation => _transform.rotation;
 
+    private DamageController _damageController = null;
     private RagdollController _ragdollController = null;
     private AnimationController _animatorController = null;
 
@@ -77,6 +78,7 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
 
         CurrentState = PlayerState.Normal;
 
+        _damageController = GetController<DamageController>();
         _ragdollController = GetController<RagdollController>();
         _animatorController = GetController<AnimationController>();
     }
@@ -124,8 +126,30 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
         _ragdollController.Disable();
     }
 
-    //[TODO] Refactoring
-    private void ProcessDeathState() => StartCoroutine(DeathRoutine());
+    private void ProcessDeathState()
+    {
+        if (IsPlayerDamageShown() == false)
+        {
+            StartCoroutine(DeathRoutine());
+        }
+        else
+        {
+            _damageController.OnDamageShown += ProcessDeathAfterDamageShown;
+        }
+    }
+
+    private bool IsPlayerDamageShown() => _damageController.IsDamageShown;
+
+    private void ProcessDeathAfterDamageShown(bool shown)
+    {
+        _damageController.OnDamageShown -= ProcessDeathAfterDamageShown;
+
+        if (shown == false)
+        {
+            StartCoroutine(DeathRoutine());
+        }
+    }
+
     private IEnumerator DeathRoutine()
     {
         yield return StartCoroutine(_ragdollController.ResetBonesRoutine());
