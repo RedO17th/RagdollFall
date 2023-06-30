@@ -1208,7 +1208,7 @@ MonoBehaviour:
   solverIterations: 6
   solverVelocityIterations: 1
   applyMassSettings: 0
-  totalMass: 60
+  totalMass: 10
   massMultiplier: 1
   unfreezeAllRigidbodies: 0
   refreshOnAwake: 0

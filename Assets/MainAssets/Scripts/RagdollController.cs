@@ -214,13 +214,13 @@ public class RagdollController : BasePlayerController
 
     #region FallMovement
 
-    [Range(100, 700)]
+    [Range(10, 700)]
     public float _movementForce = 300f;
 
     [Range(1f, 21f)]
     public float _maxMovementVelocity = 5f;
 
-    [Range(10, 100)]
+    [Range(5, 100)]
     public float _angularForce = 10f;
 
     private void ProcessFallMovement()
