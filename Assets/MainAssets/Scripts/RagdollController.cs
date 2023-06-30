@@ -7,24 +7,34 @@ using UnityEngine;
 
 public class RagdollController : BasePlayerController
 {
+    [Space]
+    [SerializeField] private bool _isLocked = true;
+    [SerializeField] private GameObject _viewGO;
+
+    [Range(0.05f, 2f)]
+    [SerializeField] private float _resetBoneTime = 1f;
+
     [Range(0.05f, 0.5f)]
     [SerializeField] private float _fallBeginTrashold = 0.2f;
     [Range(0.01f, 0.1f)]
     [SerializeField] private float _fallEndTrashold = 0.03f;
 
-    [Space]
-    [SerializeField] private bool _isLocked = true;
-
-    [Range(0.05f, 2f)]
-    [SerializeField] private float _resetBoneTime = 1f;
-
-    [SerializeField] private GameObject _viewGO;
-
     [SerializeField] private Transform _hipsTransform;
     [SerializeField] private Rigidbody _hipsRigidBody;
     [SerializeField] private RagdollOperations _ragdollOperations;
 
+    [Range(10, 700)]
+    [SerializeField] private float _movementForce = 300f;
+
+    [Range(1f, 21f)]
+    [SerializeField] private float _maxMovementVelocity = 5f;
+
+    [Range(5, 100)]
+    [SerializeField] private float _angularForce = 10f;
+
     public bool IsFaceUp => _isFaceUp;
+
+    private RagdollFallInput _movementInput = null;
 
     private MovementController _movementController = null;
     private AnimationController _animatorController = null;
@@ -42,6 +52,8 @@ public class RagdollController : BasePlayerController
     public override void Initialize(BasePlayer player)
     {
         _player = player;
+
+        _movementInput = GetComponent<RagdollFallInput>();
 
         _movementController = _player.GetController<MovementController>();
         _animatorController = _player.GetController<AnimationController>();
@@ -210,30 +222,24 @@ public class RagdollController : BasePlayerController
 
     #endregion
 
-    //[TODO] Refactoring:
-
     #region FallMovement
-
-    [Range(10, 700)]
-    public float _movementForce = 300f;
-
-    [Range(1f, 21f)]
-    public float _maxMovementVelocity = 5f;
-
-    [Range(5, 100)]
-    public float _angularForce = 10f;
 
     private void ProcessFallMovement()
     {
-        var horizontal = Input.GetAxis("Horizontal");
-        var vertical = Input.GetAxis("Vertical");
+        var movementDirection = _movementInput.GetMovementDirection();
+        var rotateDirection = _movementInput.GetRotateDirection();
 
-        var movementVector = new Vector3(horizontal, 0f, 0f).normalized;
-        var torqueVector = new Vector3(0f, vertical, 0f).normalized;
+        var movementVector = new Vector3(movementDirection, 0f, 0f).normalized;
+        var torqueVector = new Vector3(0f, rotateDirection, 0f).normalized;
 
         _hipsRigidBody.AddForce(movementVector * _movementForce, ForceMode.Force);
         _hipsRigidBody.AddTorque(torqueVector * _angularForce, ForceMode.Force);
 
+        ClampPlayerVelocityMagnitude();
+    }
+
+    private void ClampPlayerVelocityMagnitude()
+    {
         if (_hipsRigidBody.velocity.magnitude > _maxMovementVelocity)
         {
             _hipsRigidBody.velocity = Vector3.ClampMagnitude(_hipsRigidBody.velocity, _maxMovementVelocity);
@@ -241,8 +247,6 @@ public class RagdollController : BasePlayerController
     }
 
     #endregion
-
-    //..
 
     public IEnumerator ResetBonesRoutine()
     {
