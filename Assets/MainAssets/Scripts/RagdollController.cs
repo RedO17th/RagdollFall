@@ -233,7 +233,7 @@ public class RagdollController : BasePlayerController
         var torqueVector = new Vector3(0f, rotateDirection, 0f).normalized;
 
         _hipsRigidBody.AddForce(movementVector * _movementForce, ForceMode.Force);
-        _hipsRigidBody.AddTorque(torqueVector * _angularForce, ForceMode.Force);
+        _hipsRigidBody.AddTorque(torqueVector * _angularForce, ForceMode.Force);            
 
         ClampPlayerVelocityMagnitude();
     }
