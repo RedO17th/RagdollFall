@@ -148,11 +148,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 4496122979337133153}
+  _viewGO: {fileID: 7191840132684700833}
   _faceUpStandUpAName: StandUP_FaceUP
   _faceDownStandUpAName: StandUP_FaceDown
   _walkingAName: Walking
   _standUpUpTName: StandUpFaceUp
   _standUpDTName: StandUpFaceDown
+  _standUpFaceUpAnimationBones: []
+  _standUpFaceDownAnimationBones: []
 --- !u!114 &7783070420852052829
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -177,7 +180,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68e1b323043de3f4187ca940e1de5b23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _viewGO: {fileID: 7191840132684700833}
   _resetBoneTime: 0.5
   _fallBeginTrashold: 0.1
   _fallEndTrashold: 0.02

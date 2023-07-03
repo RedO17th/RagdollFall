@@ -11,15 +11,11 @@ public class PlayerInitializeState : BaseState
 
     public override void Enter()
     {
-        Debug.Log($"PlayerInitializeState.Enter");
-
         _player.Initialize();
+        _player.Prepare();
     }
 
     public override void Tick() => SendOnChangeEvent<PlayerIdleState>();
 
-    public override void Exit()
-    {
-        Debug.Log($"PlayerInitializeState.Exit");
-    }
+    public override void Exit() { }
 }

@@ -10,20 +10,15 @@ public class PlayerStandUpState : BaseState
 
     private float _resetBoneTime = 1f;
 
-    private GameObject _viewGO = null;
-
-    private BoneTransform[] _standUpFaceUpAnimationBones = null;
-    private BoneTransform[] _standUpFaceDownAnimationBones = null;
-
-    private BoneTransform[] _targetBoneTransforms = null;
+    private IReadOnlyList<Transform> _bones = null;
+    private IReadOnlyList<BoneTransform> _ragdollBones = null;
+    private IReadOnlyList<BoneTransform> _targetBoneTransforms = null;
 
     private float percent = 0f;
     private float elapsedTime = 0f;
 
     public PlayerStandUpState(BasePlayer player) : base(player)
     {
-        _viewGO = _player.View;
-
         _ragdollController = _player.GetController<RagdollController>();
         _animatorController = _player.GetController<AnimationController>();
     }
@@ -32,26 +27,25 @@ public class PlayerStandUpState : BaseState
     {
         Debug.Log($"PlayerStandUpState.Enter");
 
-        _targetBoneTransforms = GetBoneTransforms();
+        _bones = _ragdollController.Bones;
+        _ragdollBones = _ragdollController.RagdollBones;
+        _targetBoneTransforms = _animatorController.GetStandUpAnimationBonesBySide(_ragdollController.IsFaceUp);
 
         _player.StartCoroutine(ResetBonesRoutine());
     }
 
-    public override void Tick()
-    { 
-        
-    }
+    public override void Tick() { }
 
     public IEnumerator ResetBonesRoutine()
     {
         while (elapsedTime < _resetBoneTime)
         {
-            for (int i = 0; i < _ragdollController.BonesAmount; i++)
+            for (int i = 0; i < _ragdollController.Bones.Count; i++)
             {
                 percent = elapsedTime / _resetBoneTime;
 
-                _ragdollController._bones[i].localPosition = Vector3.Lerp(_ragdollController._ragdollBones[i].Position, _targetBoneTransforms[i].Position, percent);
-                _ragdollController._bones[i].localRotation = Quaternion.Lerp(_ragdollController._ragdollBones[i].Rotation, _targetBoneTransforms[i].Rotation, percent);
+                _bones[i].localPosition = Vector3.Lerp(_ragdollBones[i].Position, _targetBoneTransforms[i].Position, percent);
+                _bones[i].localRotation = Quaternion.Lerp(_ragdollBones[i].Rotation, _targetBoneTransforms[i].Rotation, percent);
             }
 
             elapsedTime += Time.deltaTime;
@@ -59,13 +53,9 @@ public class PlayerStandUpState : BaseState
             yield return null;
         }
 
+        //Обдумать, что далее..
         _animatorController.Enable();
         _player.StandUp(_ragdollController.IsFaceUp);
-    }
-
-    private BoneTransform[] GetBoneTransforms()
-    {
-        return _ragdollController.IsFaceUp ? _ragdollController._standUpFaceUpAnimationBones : _ragdollController._standUpFaceDownAnimationBones;
     }
 
     public override void Exit()

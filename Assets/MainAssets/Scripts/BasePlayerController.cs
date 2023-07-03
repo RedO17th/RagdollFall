@@ -22,6 +22,8 @@ public abstract class BasePlayerController : MonoBehaviour, IEnabable, IDisababl
 {
     public abstract void Initialize(BasePlayer player);
 
+    public virtual void Prepare() { }
+
     public virtual void Enable() => enabled = true;
     public virtual void Disable() => enabled = false;
 

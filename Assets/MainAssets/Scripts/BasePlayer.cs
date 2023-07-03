@@ -18,14 +18,12 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
 
     public event Action<bool> OnStandUp;
 
-    public Vector3 Forward => transform.forward;
+    public Vector3 Forward => _transform.forward;
     public Vector3 Position => _transform.position;
     public Quaternion Rotation => _transform.rotation;
     public GameObject View => _view;
 
     private Transform _transform = null;
-
-    #region Systematic
 
     public T GetController<T>() where T : class
     {
@@ -39,8 +37,6 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
 
         return null;
     }
-
-    #endregion
 
     public void SetPosition(Vector3 newPosition) => _transform.position = newPosition;
     public void SetRotation(Quaternion newRotation) => _transform.rotation = newRotation;
@@ -74,6 +70,15 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
         }
     }
 
+    public void Prepare() => PrepareControllers();
+    private void PrepareControllers()
+    {
+        foreach (var controller in _controllers)
+        {
+            controller.Prepare();
+        }
+    }
+
     public void Enable() { }
     public void Disable() { }
 
@@ -93,11 +98,6 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
     #endregion
 
     public void EnableRagdoll() => OnFalling?.Invoke();
-    private void DisableRagdoll() { }
 
     public void StandUp(bool side) => OnStandUp?.Invoke(side);
 }
-
-//Заметки:
-//Присутствует оффсет, но скорее всего это из-за pivot'a анимации. Transform'ы костей
-//тянут меш к точке pivota самой анимации. Оффсет происходит только на анимации FaceUp
