@@ -103,13 +103,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47e3b69b87cb01f4ba5df06aa16a7d8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _view: {fileID: 7191840132684700833}
   _charController: {fileID: 5731436331932143628}
   _controllers:
   - {fileID: 5731436331932143619}
   - {fileID: 5731436331932143617}
   - {fileID: 4518632750759294444}
-  - {fileID: 5287352628459067827}
-  - {fileID: 2316810201667429}
 --- !u!114 &5731436331932143618
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -178,7 +177,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68e1b323043de3f4187ca940e1de5b23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isLocked: 1
   _viewGO: {fileID: 7191840132684700833}
   _resetBoneTime: 0.5
   _fallBeginTrashold: 0.1
@@ -193,6 +191,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   _rayDistance: 1
+  _ragdollBones: []
+  _bones: []
 --- !u!114 &5287352628459067827
 MonoBehaviour:
   m_ObjectHideFlags: 0

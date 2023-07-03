@@ -8,7 +8,6 @@ using UnityEngine;
 public class RagdollController : BasePlayerController
 {
     [Space]
-    [SerializeField] private bool _isLocked = true;
     [SerializeField] private GameObject _viewGO;
 
     [Range(0.05f, 2f)]
@@ -35,21 +34,25 @@ public class RagdollController : BasePlayerController
     [SerializeField] private LayerMask _hitMask;
     [SerializeField] private float _rayDistance = 1f;
 
+    public event Action OnFell;
+
     public bool IsFaceUp => _isFaceUp;
+    public int BonesAmount => _bones.Length;
 
     private RagdollFallInput _movementInput = null;
 
-    private MovementController _movementController = null;
+    //private MovementController _movementController = null;
     private AnimationController _animatorController = null;
 
     private BasePlayer _player = null;
 
-    private BoneTransform[] _standUpFaceUpAnimationBones;
-    private BoneTransform[] _standUpFaceDownAnimationBones;
-    private BoneTransform[] _ragdollBones;
-    private Transform[] _bones;
+    public BoneTransform[] _standUpFaceUpAnimationBones;
+    public BoneTransform[] _standUpFaceDownAnimationBones;
 
-    private bool _playerIsFalling = false;
+    public BoneTransform[] _ragdollBones;
+    public Transform[] _bones;
+
+    private bool _playerIsFallingFlag = false;
     private bool _isFaceUp = false;
 
     public override void Initialize(BasePlayer player)
@@ -58,7 +61,7 @@ public class RagdollController : BasePlayerController
 
         _movementInput = GetComponent<RagdollFallInput>();
 
-        _movementController = _player.GetController<MovementController>();
+        //_movementController = _player.GetController<MovementController>();
         _animatorController = _player.GetController<AnimationController>();
 
         InitializeBonesArrays();
@@ -98,65 +101,39 @@ public class RagdollController : BasePlayerController
         _player.SetRotation(rotationBeforeSampling);
     }
 
-    private void SaveBoneTransformInto(BoneTransform[] destination)
-    {
-        for (int i = 0; i < _bones.Length; i++)
-        {
-            destination[i].SetPosition(_bones[i].localPosition);
-            destination[i].SetRotation(_bones[i].localRotation);
-        }
-    }
-
-    public void Unlock() => _isLocked = false;
-    public void Lock() => _isLocked = true;
-
     public override void Enable()
     {
-        if (_isLocked == false)
-        {
-            _movementController.Disable();
-            _animatorController.Disable();  
+        _ragdollOperations.EnableRagdoll();
 
-            _ragdollOperations.EnableRagdoll();
-
-            base.Enable();
-        }
+        base.Enable();
     }
 
     private void Update()
     {
-        CheckFallComplition();
+        CheckFallBegin();
+        CheckFallEnd();
 
-        if (_player.CurrentState == PlayerState.Fall)
-        {
-            ProcessFallMovement();
-        }
+        //if (_player.CurrentState == PlayerState.Fall)
+        //{
+        //    ProcessFallMovement();
+        //}
     }
 
     #region ChackFall
 
-    private void CheckFallComplition()
-    {
-        CheckFallBegin();
-
-        CheckFallEnd();
-    }
-
     private void CheckFallBegin()
     {
-        if (_playerIsFalling == false && _hipsRigidBody.velocity.magnitude >= _fallBeginTrashold)
+        if (_playerIsFallingFlag == false && _hipsRigidBody.velocity.magnitude >= _fallBeginTrashold)
         {
-            _playerIsFalling = true;
-
-            _player.SetState(PlayerState.Fall);
+            _playerIsFallingFlag = true;
         }
     }
 
     private void CheckFallEnd()
     {
-        if (_playerIsFalling && _hipsRigidBody.velocity.magnitude <= _fallEndTrashold)
+        if (_playerIsFallingFlag && _hipsRigidBody.velocity.magnitude <= _fallEndTrashold)
         {
-            _playerIsFalling = false;
+            _playerIsFallingFlag = false;
 
             _isFaceUp = _hipsTransform.forward.y > 0;
 
@@ -165,7 +142,7 @@ public class RagdollController : BasePlayerController
 
             SaveBoneTransformInto(_ragdollBones);
 
-            _player.SetState(PlayerState.Death);
+            OnFell?.Invoke();
         }
     }
 
@@ -198,29 +175,21 @@ public class RagdollController : BasePlayerController
     {
         var hipsPosition = _hipsTransform.position;
 
-        #region Old
-
-        //var posOffset = GetBoneTransforms()[0].Position;
-        //    posOffset.y = 0;
-        //    posOffset = _player.Rotation * posOffset;
-
-        //_player.SetPosition(_player.Position - posOffset);
-
-        #endregion
-
         if (Physics.Raycast(hipsPosition, Vector3.down, out RaycastHit hitInfo, _rayDistance, _hitMask))
         {
-            //_player.SetPosition(new Vector3(_player.Position.x, hitInfo.point.y, _player.Position.z));
-            
             _player.SetPosition(new Vector3(hipsPosition.x, hitInfo.point.y, hipsPosition.z));
         }
 
         _hipsTransform.position = hipsPosition;
     }
 
-    private BoneTransform[] GetBoneTransforms()
+    private void SaveBoneTransformInto(BoneTransform[] destination)
     {
-        return _isFaceUp ? _standUpFaceUpAnimationBones : _standUpFaceDownAnimationBones;
+        for (int i = 0; i < _bones.Length; i++)
+        {
+            destination[i].SetPosition(_bones[i].localPosition);
+            destination[i].SetRotation(_bones[i].localRotation);
+        }
     }
 
     #endregion
@@ -240,7 +209,6 @@ public class RagdollController : BasePlayerController
 
         ClampPlayerVelocityMagnitude();
     }
-
     private void ClampPlayerVelocityMagnitude()
     {
         if (_hipsRigidBody.velocity.magnitude > _maxMovementVelocity)
@@ -251,28 +219,33 @@ public class RagdollController : BasePlayerController
 
     #endregion
 
-    public IEnumerator ResetBonesRoutine()
-    {
-        var percent = 0f;
-        var elapsedTime = 0f;
+    //public IEnumerator ResetBonesRoutine()
+    //{
+    //    var percent = 0f;
+    //    var elapsedTime = 0f;
 
-        var targetBoneTransforms = GetBoneTransforms();
+    //    var targetBoneTransforms = GetBoneTransforms();
 
-        while (elapsedTime < _resetBoneTime)
-        {
-            for (int i = 0; i < _bones.Length; i++)
-            {
-                percent = elapsedTime / _resetBoneTime;
+    //    while (elapsedTime < _resetBoneTime)
+    //    {
+    //        for (int i = 0; i < _bones.Length; i++)
+    //        {
+    //            percent = elapsedTime / _resetBoneTime;
 
-                _bones[i].localPosition = Vector3.Lerp(_ragdollBones[i].Position, targetBoneTransforms[i].Position, percent);
-                _bones[i].localRotation = Quaternion.Lerp(_ragdollBones[i].Rotation, targetBoneTransforms[i].Rotation, percent);
-            }
+    //            _bones[i].localPosition = Vector3.Lerp(_ragdollBones[i].Position, targetBoneTransforms[i].Position, percent);
+    //            _bones[i].localRotation = Quaternion.Lerp(_ragdollBones[i].Rotation, targetBoneTransforms[i].Rotation, percent);
+    //        }
 
-            elapsedTime += Time.deltaTime;
+    //        elapsedTime += Time.deltaTime;
 
-            yield return null;
-        }
-    }
+    //        yield return null;
+    //    }
+    //}
+
+    //private BoneTransform[] GetBoneTransforms()
+    //{
+    //    return _isFaceUp ? _standUpFaceUpAnimationBones : _standUpFaceDownAnimationBones;
+    //}
 
     public override void Disable()
     {
@@ -283,14 +256,14 @@ public class RagdollController : BasePlayerController
 
     public override void Clear()
     {
-        _playerIsFalling = false;
+        _playerIsFallingFlag = false;
         _isFaceUp = false;
 
-        _movementController = null;
-        _animatorController = null;
+        //_movementController = null;
+        //_animatorController = null;
 
-        _standUpFaceUpAnimationBones = null;
-        _standUpFaceDownAnimationBones = null;
+        //_standUpFaceUpAnimationBones = null;
+        //_standUpFaceDownAnimationBones = null;
 
         _ragdollBones = null;
         _bones = null;

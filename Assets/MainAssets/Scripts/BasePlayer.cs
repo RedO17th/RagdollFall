@@ -8,21 +8,20 @@ public enum PlayerState { None = -1, Normal, Fall, Death }
 
 public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
 {
+    [SerializeField] private GameObject _view;
     [SerializeField] private CharacterController _charController;
     [SerializeField] private BasePlayerController[] _controllers;
 
     public event Action<PlayerState> OnStateChanged;
 
+    public event Action OnFalling;
+
     public event Action<bool> OnStandUp;
 
-    public PlayerState CurrentState { get; private set; } = PlayerState.None;
     public Vector3 Forward => transform.forward;
     public Vector3 Position => _transform.position;
     public Quaternion Rotation => _transform.rotation;
-
-    private DamageController _damageController = null;
-    private RagdollController _ragdollController = null;
-    private AnimationController _animatorController = null;
+    public GameObject View => _view;
 
     private Transform _transform = null;
 
@@ -43,46 +42,30 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
 
     #endregion
 
-    public void SetState(PlayerState newState)
-    {
-        if (newState != CurrentState)
-        {
-            CurrentState = newState;
-
-            OnStateChanged?.Invoke(CurrentState);
-
-            ProcessCurrentState();
-        }
-    }
-
     public void SetPosition(Vector3 newPosition) => _transform.position = newPosition;
     public void SetRotation(Quaternion newRotation) => _transform.rotation = newRotation;
 
-    //Заглушка
+    private BaseStateMachine _stateMachine = null;
+
     private void Awake()
     {
         _transform = GetComponent<Transform>();
+
+        _stateMachine = new BaseStateMachine();
+
+        Dictionary<Type, BaseState> states = new Dictionary<Type, BaseState>
+        {
+            { typeof(PlayerInitializeState), new PlayerInitializeState(this) },
+            { typeof(PlayerIdleState), new PlayerIdleState(this) },
+            { typeof(PlayerMovementState), new PlayerMovementState(this) },
+            { typeof(PlayerFallState), new PlayerFallState(this) },
+            { typeof(PlayerStandUpState), new PlayerStandUpState(this) }
+        };
+
+        _stateMachine.AddStates(states);
     }
 
-    //Заглушка
-    private void Start()
-    {
-        Initialize();
-        Enable();
-    }
-
-    //[TODO] Вызвать из вне
-    public virtual void Initialize()
-    {
-        InitializeControllers();
-
-        CurrentState = PlayerState.Normal;
-
-        _damageController = GetController<DamageController>();
-        _ragdollController = GetController<RagdollController>();
-        _animatorController = GetController<AnimationController>();
-    }
-
+    public virtual void Initialize() => InitializeControllers();
     protected virtual void InitializeControllers()
     {
         foreach (var controller in _controllers)
@@ -91,82 +74,12 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
         }
     }
 
-    //[TODO] Вызвать из вне
-    public virtual void Enable() => EnableControllers();
-    protected virtual void EnableControllers()
+    public void Enable() { }
+    public void Disable() { }
+
+    private void Update()
     {
-        foreach (var controller in _controllers)
-        {
-            controller.Enable();
-        }
-    }
-
-    public void EnableRagdoll()
-    {
-        _ragdollController.Unlock();
-        _ragdollController.Enable();
-    }
-
-    private void ProcessCurrentState()
-    {
-        switch (CurrentState)
-        {
-            case PlayerState.Death:
-                {
-                    DisableRagdoll();
-                    ProcessDeathState();
-                    break;
-                }
-        }
-    }
-
-    private void DisableRagdoll()
-    {
-        _ragdollController.Lock();
-        _ragdollController.Disable();
-    }
-
-    private void ProcessDeathState()
-    {
-        if (IsPlayerDamageShown() == false)
-        {
-            StartCoroutine(DeathRoutine());
-        }
-        else
-        {
-            _damageController.OnDamageShown += ProcessDeathAfterDamageShown;
-        }
-    }
-
-    private bool IsPlayerDamageShown() => _damageController.IsDamageShown;
-
-    private void ProcessDeathAfterDamageShown(bool shown)
-    {
-        _damageController.OnDamageShown -= ProcessDeathAfterDamageShown;
-
-        if (shown == false)
-        {
-            StartCoroutine(DeathRoutine());
-        }
-    }
-
-    private IEnumerator DeathRoutine()
-    {
-        yield return StartCoroutine(_ragdollController.ResetBonesRoutine());
-
-        _animatorController.Enable();
-
-        OnStandUp?.Invoke(_ragdollController.IsFaceUp);
-    }
-
-    //[TODO] Вызвать из вне
-    public void Disable() => DisableControllers();
-    protected virtual void DisableControllers()
-    {
-        foreach (var controller in _controllers)
-        {
-            controller.Disable();
-        }
+        _stateMachine?.Tick();
     }
 
     #region MovementController
@@ -179,7 +92,10 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
 
     #endregion
 
+    public void EnableRagdoll() => OnFalling?.Invoke();
+    private void DisableRagdoll() { }
 
+    public void StandUp(bool side) => OnStandUp?.Invoke(side);
 }
 
 //Заметки:

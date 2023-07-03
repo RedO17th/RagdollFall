@@ -24,7 +24,6 @@ public class MovementController : BasePlayerController, IMovmentController
     private IMovementInput _input = null;
 
     private Vector3 _normalizedDirection = Vector3.zero;
-
     private Quaternion _rotation = Quaternion.identity;
     private Quaternion _targetRotation = Quaternion.identity;
 
@@ -49,6 +48,18 @@ public class MovementController : BasePlayerController, IMovmentController
         base.Disable();
 
         _player.DisableMovement();
+
+        ForceStopIfNecessary();
+    }
+
+    private void ForceStopIfNecessary()
+    {
+        if (_motionStateSwitchFlag)
+        {
+            _motionStateSwitchFlag = false;
+
+            OnStopEvent?.Invoke();
+        }
     }
 
     private void Update()
