@@ -35,14 +35,14 @@ public class RagdollController : BasePlayerController
     public event Action OnFell;
 
     public IReadOnlyList<Transform> Bones => _bones;
-    public IReadOnlyList<BoneTransform> RagdollBones => _ragdollBones;
+    public IReadOnlyList<BoneTransform> RagdollBones => _ragdollBones.ToList();
     public bool IsFaceUp => _isFaceUp;
 
     private BasePlayer _player = null;
     private RagdollFallInput _movementInput = null;
 
-    private BoneTransform[] _ragdollBones;
-    private Transform[] _bones;
+    private List<BoneTransform> _ragdollBones;
+    private List<Transform> _bones;
 
     private bool _playerIsFallingFlag = false;
     private bool _isFaceUp = false;
@@ -58,13 +58,13 @@ public class RagdollController : BasePlayerController
 
     private void InitializeBonesArrays()
     {
-        _bones = _hipsRigidBody.transform.GetComponentsInChildren<Transform>();
+        _bones = _hipsRigidBody.transform.GetComponentsInChildren<Transform>().ToList();
 
-        _ragdollBones = new BoneTransform[_bones.Length];
+        _ragdollBones = new List<BoneTransform>(_bones.Count);
 
-        for (int i = 0; i < _bones.Length; i++)
+        for (int i = 0; i < _bones.Count; i++)
         {
-            _ragdollBones[i] = new BoneTransform();
+            _ragdollBones.Add(new BoneTransform());
         }
     }
 
@@ -150,9 +150,9 @@ public class RagdollController : BasePlayerController
         _hipsTransform.position = hipsPosition;
     }
 
-    private void SaveBoneTransformInto(BoneTransform[] destination)
+    private void SaveBoneTransformInto(List<BoneTransform> destination)
     {
-        for (int i = 0; i < _bones.Length; i++)
+        for (int i = 0; i < _bones.Count; i++)
         {
             destination[i].SetPosition(_bones[i].localPosition);
             destination[i].SetRotation(_bones[i].localRotation);
