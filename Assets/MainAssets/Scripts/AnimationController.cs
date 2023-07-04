@@ -2,28 +2,36 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR;
+
+public enum AnimationType { None = -1, Idle, Movement, StandFUp, StandFD }
+
+[Serializable]
+public class Animations
+{
+    [SerializeField] private AnimationType _type;
+    [SerializeField] private string _animationName;
+
+    public AnimationType Type => _type;
+    public string Name => _animationName;
+}
 
 public class AnimationController : BasePlayerController
 {
     [SerializeField] private Animator _animator;
 
-    [SerializeField] private GameObject _viewGO;
+    [SerializeField] private Animations[] _animations;
 
-    [SerializeField] private string _faceUpStandUpAName;
-    [SerializeField] private string _faceDownStandUpAName;
-
+    [Space]
     [SerializeField] private string _walkingAName;
     [SerializeField] private string _standUpUpTName;
     [SerializeField] private string _standUpDTName;
 
+    private BasePlayer _player = null;
+
     private RagdollController _ragdollController = null;
     private IMovmentController _movementController = null;
 
-    private BasePlayer _player = null;
-
-    private BoneTransform[] _standUpFaceUpAnimationBones = null;
-    private BoneTransform[] _standUpFaceDownAnimationBones = null;
+    private BonesSnapshotAnimationHandler _snapshotHandler = null; 
 
     public override void Initialize(BasePlayer player)
     {
@@ -31,6 +39,30 @@ public class AnimationController : BasePlayerController
 
         _ragdollController = _player.GetController<RagdollController>();
         _movementController = _player.GetController<IMovmentController>();
+    }
+
+    public override void Prepare()
+    {
+        _snapshotHandler = new BonesSnapshotAnimationHandler(_ragdollController.Bones);
+
+        CreateSnapshotsByAnimations();
+    }
+
+    private void CreateSnapshotsByAnimations()
+    {
+        foreach (var animation in _animations)
+        {
+            var positionBeforeSampling = _player.Position; //bugfix
+            var rotationBeforeSampling = _player.Rotation;
+
+            var clip = ReturnAnimationClipByName(animation.Name);
+                clip.SampleAnimation(_player.View, 0f);
+
+            _snapshotHandler.CreateSnapshot(animation.Type);
+
+            _player.SetPosition(positionBeforeSampling); //bugfix
+            _player.SetRotation(rotationBeforeSampling);
+        }
     }
 
     private AnimationClip ReturnAnimationClipByName(string name)
@@ -49,51 +81,9 @@ public class AnimationController : BasePlayerController
         return result;
     }
 
-    public IReadOnlyList<BoneTransform> GetStandUpAnimationBonesBySide(bool isFaceUp)
+    public IReadOnlyList<BoneTransform> GetBonesSnapshotBy(AnimationType type)
     {
-        return isFaceUp ? _standUpFaceUpAnimationBones : _standUpFaceDownAnimationBones;
-    }
-
-    public override void Prepare()
-    {
-        RecordAnimationBones();
-    }
-    private void RecordAnimationBones()
-    {
-        _standUpFaceUpAnimationBones = new BoneTransform[_ragdollController.Bones.Count];
-        _standUpFaceDownAnimationBones = new BoneTransform[_ragdollController.Bones.Count];
-
-        for (int i = 0; i < _ragdollController.Bones.Count; i++)
-        {
-            _standUpFaceUpAnimationBones[i] = new BoneTransform();
-            _standUpFaceDownAnimationBones[i] = new BoneTransform();
-        }
-
-        SaveAnimationBonesTransformInto(ReturnAnimationClipByName(_faceUpStandUpAName), _standUpFaceUpAnimationBones);
-        SaveAnimationBonesTransformInto(ReturnAnimationClipByName(_faceDownStandUpAName), _standUpFaceDownAnimationBones);
-    }
-    private void SaveAnimationBonesTransformInto(AnimationClip clip, BoneTransform[] destination)
-    {
-        var positionBeforeSampling = _player.Position;
-        var rotationBeforeSampling = _player.Rotation;
-
-        clip.SampleAnimation(_viewGO, 0f);
-
-        SaveBoneTransformInto(destination);
-
-        _player.SetPosition(positionBeforeSampling);
-        _player.SetRotation(rotationBeforeSampling);
-    }
-
-    private void SaveBoneTransformInto(BoneTransform[] destination)
-    {
-        var bones = _ragdollController.Bones;
-
-        for (int i = 0; i < _ragdollController.Bones.Count; i++)
-        {
-            destination[i].SetPosition(bones[i].localPosition);
-            destination[i].SetRotation(bones[i].localRotation);
-        }
+        return _snapshotHandler.GetSnapshotBy(type);
     }
 
     public override void Enable()

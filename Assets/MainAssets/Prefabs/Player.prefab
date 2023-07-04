@@ -148,14 +148,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 4496122979337133153}
-  _viewGO: {fileID: 7191840132684700833}
   _faceUpStandUpAName: StandUP_FaceUP
   _faceDownStandUpAName: StandUP_FaceDown
+  _animations:
+  - _type: 2
+    _animationName: StandUP_FaceUP
+  - _type: 3
+    _animationName: StandUP_FaceDown
   _walkingAName: Walking
   _standUpUpTName: StandUpFaceUp
   _standUpDTName: StandUpFaceDown
-  _standUpFaceUpAnimationBones: []
-  _standUpFaceDownAnimationBones: []
 --- !u!114 &7783070420852052829
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,8 +195,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   _rayDistance: 1
-  _ragdollBones: []
-  _bones: []
 --- !u!114 &5287352628459067827
 MonoBehaviour:
   m_ObjectHideFlags: 0

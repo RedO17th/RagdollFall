@@ -29,9 +29,18 @@ public class PlayerStandUpState : BaseState
 
         _bones = _ragdollController.Bones;
         _ragdollBones = _ragdollController.RagdollBones;
-        _targetBoneTransforms = _animatorController.GetStandUpAnimationBonesBySide(_ragdollController.IsFaceUp);
 
+        _targetBoneTransforms = GetBonesSnapshot();
+
+        //[Ref]
         _player.StartCoroutine(ResetBonesRoutine());
+    }
+
+    private IReadOnlyList<BoneTransform> GetBonesSnapshot()
+    {
+        var type = (_ragdollController.IsFaceUp) ? AnimationType.StandFUp : AnimationType.StandFD;
+
+        return _animatorController.GetBonesSnapshotBy(type);
     }
 
     public override void Tick() { }
