@@ -58,7 +58,7 @@ public class PlayerStandUpState : BaseState
     {
         _animatorController.OnPlayerGotUp -= ProcessOnPlayerGotUpEvent;
 
-        //SendOnChangeEvent<PlayerIdleState>();
+        SendOnChangeEvent<PlayerDeathState>();
     }
 
     public IEnumerator ResetBonesRoutine()
@@ -79,8 +79,5 @@ public class PlayerStandUpState : BaseState
         }
     }
 
-    public override void Exit()
-    {
-        Debug.Log($"PlayerStandUpState.Exit");
-    }
+    public override void Exit() { }
 }

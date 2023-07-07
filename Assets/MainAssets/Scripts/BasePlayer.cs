@@ -51,7 +51,8 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
             { typeof(PlayerIdleState), new PlayerIdleState(this) },
             { typeof(PlayerMovementState), new PlayerMovementState(this) },
             { typeof(PlayerFallState), new PlayerFallState(this) },
-            { typeof(PlayerStandUpState), new PlayerStandUpState(this) }
+            { typeof(PlayerStandUpState), new PlayerStandUpState(this) },
+            { typeof(PlayerDeathState), new PlayerDeathState(this) }
         };
 
         _stateMachine.AddStates(states);
@@ -91,4 +92,13 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
     #endregion
 
     public void EnableRagdoll() => OnFalling?.Invoke();
+
+    public void Clear() => ClearControllers();
+    private void ClearControllers()
+    {
+        foreach (var controller in _controllers)
+        {
+            controller.Clear();
+        }
+    }
 }

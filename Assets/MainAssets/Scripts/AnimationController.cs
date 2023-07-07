@@ -129,6 +129,9 @@ public class AnimationController : BasePlayerController
 
     public override void Clear()
     {
-        
+        _movementController = null;
+        _ragdollController = null;
+
+        _player = null;
     }
 }

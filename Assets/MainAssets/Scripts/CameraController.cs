@@ -45,7 +45,7 @@ public class CameraController : BasePlayerController
     {
         SetPositionToCamera();
 
-        if (_isShifting == false)
+        if (_isShifting == false && _currentTarget != null)
         {
             LookAtTarget(_currentTarget.position);
         }

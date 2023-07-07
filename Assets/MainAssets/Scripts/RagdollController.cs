@@ -127,6 +127,10 @@ public class RagdollController : BasePlayerController
         {
             _player.SetPosition(new Vector3(hipsPosition.x, hitInfo.point.y, hipsPosition.z));
         }
+        else 
+        {
+            _player.SetPosition(hipsPosition); //LittleFix
+        }
 
         _hipsTransform.position = hipsPosition;
     }
