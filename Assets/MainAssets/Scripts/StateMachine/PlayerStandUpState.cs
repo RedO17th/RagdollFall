@@ -28,8 +28,6 @@ public class PlayerStandUpState : BaseState
 
     public override void Enter()
     {
-        Debug.Log($"PlayerStandUpState.Enter");
-
         _bones = _ragdollController.Bones;
         _ragdollBones = _ragdollController.RagdollBones;
 

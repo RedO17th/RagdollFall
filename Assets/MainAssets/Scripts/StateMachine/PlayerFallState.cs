@@ -5,20 +5,22 @@ using UnityEngine;
 
 public class PlayerFallState : BaseState
 {
+    private const float MECHANICTIME = 2f;
+    private const float MINTIMESCALE = 0.3f;
+    private const float MAXTIMESCALE = 1f;
+
     private RagdollController _ragdollController = null;
+    private RagdollFallController _ragdollFallController = null;
 
     private DamageController _damageController = null;
     private CameraController _cameraController = null;
     private MovementController _movementController = null;
     private AnimationController _animatorController = null;
 
-    private const float MECHANICTIME = 2f;
-    private const float MINTIMESCALE = 0.3f;
-    private const float MAXTIMESCALE = 1f;
-
     public PlayerFallState(BasePlayer player) : base(player)
     {
         _ragdollController = _player.GetController<RagdollController>();
+        _ragdollFallController = _player.GetController<RagdollFallController>();
 
         _damageController = _player.GetController<DamageController>();
         _cameraController = _player.GetController<CameraController>();
@@ -39,6 +41,8 @@ public class PlayerFallState : BaseState
 
         _ragdollController.OnFell += ProcessPlayerFell;
         _ragdollController.Enable();
+
+        _ragdollFallController.Enable();
     }
 
     private void ProcessLimbDamage(BaseLimb limb)
@@ -92,6 +96,7 @@ public class PlayerFallState : BaseState
 
     public override void Exit()
     {
+        _ragdollFallController.Disable();
         _ragdollController.Disable();
         _damageController.Disable();
     }

@@ -16,8 +16,9 @@ GameObject:
   - component: {fileID: 5731436331932143618}
   - component: {fileID: 5731436331932143619}
   - component: {fileID: 5731436331932143617}
-  - component: {fileID: 7783070420852052829}
   - component: {fileID: 4518632750759294444}
+  - component: {fileID: 7783070420852052829}
+  - component: {fileID: 2349871114398481575}
   - component: {fileID: 2316810201667429}
   - component: {fileID: 5287352628459067827}
   m_Layer: 0
@@ -109,6 +110,7 @@ MonoBehaviour:
   - {fileID: 5731436331932143619}
   - {fileID: 5731436331932143617}
   - {fileID: 4518632750759294444}
+  - {fileID: 2349871114398481575}
   - {fileID: 2316810201667429}
   - {fileID: 5287352628459067827}
 --- !u!114 &5731436331932143618
@@ -159,18 +161,6 @@ MonoBehaviour:
   _walkingAName: Walking
   _standUpUpTName: StandUpFaceUp
   _standUpDTName: StandUpFaceDown
---- !u!114 &7783070420852052829
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5731436331932143631}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4cd2eed09a13e2c4b8f32d1781eaa6da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4518632750759294444
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -189,13 +179,38 @@ MonoBehaviour:
   _hipsTransform: {fileID: 2654043081836324495}
   _hipsRigidBody: {fileID: 2878322539856207687}
   _ragdollOperations: {fileID: 4260309188769189486}
-  _movementForce: 80
-  _maxMovementVelocity: 6
-  _angularForce: 10
   _hitMask:
     serializedVersion: 2
     m_Bits: 64
   _rayDistance: 1
+--- !u!114 &7783070420852052829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5731436331932143631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cd2eed09a13e2c4b8f32d1781eaa6da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2349871114398481575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5731436331932143631}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb348a83c90f99347875f04d7ec640e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hipsRigidBody: {fileID: 2878322539856207687}
+  _movementForce: 80
+  _maxMovementVelocity: 6
+  _angularForce: 10
 --- !u!114 &2316810201667429
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -226,13 +241,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f38a6c5b23a318545bb7decb451642c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _cameraOffset: {x: 0, y: 10, z: 10}
   _camera: {fileID: 0}
   _minFOV: 5
   _maxFOV: 60
   _shiftLookTime: 1
   _cameraTransform: {fileID: 0}
   _hipsLookTarget: {fileID: 2654043081836324495}
-  _cameraOffset: {x: 0, y: 10, z: 10}
   _movementSpeed: 5
 --- !u!1 &5731436332698096176
 GameObject:

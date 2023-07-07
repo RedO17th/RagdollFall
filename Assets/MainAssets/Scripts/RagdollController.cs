@@ -20,15 +20,6 @@ public class RagdollController : BasePlayerController
     [SerializeField] private Rigidbody _hipsRigidBody;
     [SerializeField] private RagdollOperations _ragdollOperations;
 
-    [Range(10, 700)]
-    [SerializeField] private float _movementForce = 300f;
-
-    [Range(1f, 21f)]
-    [SerializeField] private float _maxMovementVelocity = 5f;
-
-    [Range(5, 100)]
-    [SerializeField] private float _angularForce = 10f;
-
     [SerializeField] private LayerMask _hitMask;
     [SerializeField] private float _rayDistance = 1f;
 
@@ -38,7 +29,6 @@ public class RagdollController : BasePlayerController
     public bool IsFaceUp { get; private set; }
 
     private BasePlayer _player = null;
-    private RagdollFallInput _movementInput = null;
 
     private List<BoneTransform> _ragdollBones;
     private List<Transform> _bones;
@@ -48,8 +38,6 @@ public class RagdollController : BasePlayerController
     public override void Initialize(BasePlayer player)
     {
         _player = player;
-
-        _movementInput = GetComponent<RagdollFallInput>();
 
         InitializeBonesArrays();
     }
@@ -77,11 +65,6 @@ public class RagdollController : BasePlayerController
     {
         CheckFallBegin();
         CheckFallEnd();
-
-        //if (_player.CurrentState == PlayerState.Fall)
-        //{
-        //    ProcessFallMovement();
-        //}
     }
 
     #region ChackFall
@@ -154,31 +137,6 @@ public class RagdollController : BasePlayerController
         {
             destination[i].SetPosition(_bones[i].localPosition);
             destination[i].SetRotation(_bones[i].localRotation);
-        }
-    }
-
-    #endregion
-
-    #region FallMovement
-
-    private void ProcessFallMovement()
-    {
-        var movementDirection = _movementInput.GetMovementDirection();
-        var rotateDirection = _movementInput.GetRotateDirection();
-
-        var movementVector = new Vector3(movementDirection, 0f, 0f).normalized;
-        var torqueVector = new Vector3(0f, rotateDirection, 0f).normalized;
-
-        _hipsRigidBody.AddForce(movementVector * _movementForce, ForceMode.Force);
-        _hipsRigidBody.AddTorque(torqueVector * _angularForce, ForceMode.Force);            
-
-        ClampPlayerVelocityMagnitude();
-    }
-    private void ClampPlayerVelocityMagnitude()
-    {
-        if (_hipsRigidBody.velocity.magnitude > _maxMovementVelocity)
-        {
-            _hipsRigidBody.velocity = Vector3.ClampMagnitude(_hipsRigidBody.velocity, _maxMovementVelocity);
         }
     }
 
