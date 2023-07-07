@@ -60,7 +60,7 @@ public class PlayerStandUpState : BaseState
     {
         _animatorController.OnPlayerGotUp -= ProcessOnPlayerGotUpEvent;
 
-        SendOnChangeEvent<PlayerIdleState>();
+        //SendOnChangeEvent<PlayerIdleState>();
     }
 
     public IEnumerator ResetBonesRoutine()

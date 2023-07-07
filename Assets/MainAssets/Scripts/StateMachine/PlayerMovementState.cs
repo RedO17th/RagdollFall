@@ -13,8 +13,6 @@ public class PlayerMovementState : BaseState
 
     public override void Enter()
     {
-        Debug.Log($"PlayerMovementState.Enter");
-
         _movementController.Enable();
 
         _player.OnFalling += ProcessPlayerFallAction;
@@ -35,8 +33,6 @@ public class PlayerMovementState : BaseState
 
     public override void Exit()
     {
-        Debug.Log($"PlayerMovementState.Exit");
-
         _player.OnFalling -= ProcessPlayerFallAction;
 
         _movementController.Disable();

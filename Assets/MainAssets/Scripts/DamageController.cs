@@ -4,28 +4,12 @@ using UnityEngine;
 
 public class DamageController : BasePlayerController
 {
-    [Range(1f, 15f)]
-    [SerializeField] private float _mechanicTime = 1f;
-
     [SerializeField] private BaseLimb[] _limbs;
 
-    public event Action<bool> OnDamageShown; 
-
-    public bool IsDamageShown { get; private set; } = false;
-
-    private BasePlayer _player = null;
-
-    private CameraController _cameraController = null;
-
-    private BaseLimb _currentDamagedLimb = null;
-
+    public event Action<BaseLimb> OnDamage;
 
     public override void Initialize(BasePlayer player)
     {
-        _player = player;
-
-        _cameraController = _player.GetController<CameraController>();
-
         LimbsInitialize();
     }
 
@@ -41,79 +25,14 @@ public class DamageController : BasePlayerController
     {
         base.Enable();
 
-        _player.OnStateChanged += ProcessPlayerStates;
-
-        _cameraController.OnShiftCompleted += ProcessCameraShiftingDirection;
+        EnableLimbs();
     }
 
     public override void Disable()
     {
-        _player.OnStateChanged -= ProcessPlayerStates;
-
-        _cameraController.OnShiftCompleted -= ProcessCameraShiftingDirection;
-
-        base.Disable();
-    }
-
-    private void ProcessPlayerStates(PlayerState state)
-    {
-        if (state == PlayerState.Fall)
-        {
-            ProcessPlayerFallState();
-        }
-
-        if (state == PlayerState.Death)
-        {
-            ProcessPlayerDeathState();
-        }
-    }
-
-    private void ProcessPlayerFallState() => EnableLimbs();
-    private void ProcessPlayerDeathState() => DisableLimbs();
-
-    private void ProcessLimbsCollision(BaseLimb damagedLimb)
-    {
-        IsDamageShown = true;
-
-        _currentDamagedLimb = damagedLimb;
-
-        Debug.Log($"DamageController: Limb {_currentDamagedLimb.gameObject.name}, price = {_currentDamagedLimb.Price} ");
-
         DisableLimbs();
 
-        ShowDamagedLimb();
-    }
-    private void DisableLimbs()
-    {
-        foreach (var limb in _limbs)
-        {
-            limb.OnCollided -= ProcessLimbsCollision;
-            limb.Disable();
-        }
-    }
-
-    private void ShowDamagedLimb()
-    {
-        SetTimeScale(0.1f);
-
-        StartCoroutine(ShowLimbRoutine());
-    }
-
-    private void SetTimeScale(float value) => Time.timeScale = value;
-
-    private IEnumerator ShowLimbRoutine()
-    {
-        _cameraController.ShiftLookTo(_currentDamagedLimb.transform);
-
-        yield return new WaitForSecondsRealtime(_mechanicTime);
-
-        _cameraController.ShiftLookBack();
-
-        EnableLimbs();
-
-        IsDamageShown = false;
-
-        OnDamageShown?.Invoke(IsDamageShown);
+        base.Disable();
     }
 
     private void EnableLimbs()
@@ -125,19 +44,15 @@ public class DamageController : BasePlayerController
         }
     }
 
-    //[TODO] Refactoring
-    private void ProcessCameraShiftingDirection(ShiftDirectionType direction)
+    private void ProcessLimbsCollision(BaseLimb damagedLimb) => OnDamage?.Invoke(damagedLimb);
+    private void DisableLimbs()
     {
-        if (direction == ShiftDirectionType.Backward)
+        foreach (var limb in _limbs)
         {
-            SetTimeScale(1f);
+            limb.OnCollided -= ProcessLimbsCollision;
+            limb.Disable();
         }
     }
 
-    public override void Clear()
-    {
-        _currentDamagedLimb = null;
-        _cameraController = null;
-        _player = null;
-    }
+    public override void Clear() { }
 }

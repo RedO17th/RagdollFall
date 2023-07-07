@@ -12,8 +12,6 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
     [SerializeField] private CharacterController _charController;
     [SerializeField] private BasePlayerController[] _controllers;
 
-    public event Action<PlayerState> OnStateChanged;
-
     public event Action OnFalling;
 
     public Vector3 Forward => _transform.forward;
@@ -80,10 +78,7 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
     public void Enable() { }
     public void Disable() { }
 
-    private void Update()
-    {
-        _stateMachine?.Tick();
-    }
+    private void Update() => _stateMachine?.Tick();
 
     #region MovementController
 
