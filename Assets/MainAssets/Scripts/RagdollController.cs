@@ -33,10 +33,9 @@ public class RagdollController : BasePlayerController
     [SerializeField] private float _rayDistance = 1f;
 
     public event Action OnFell;
-
     public IReadOnlyList<Transform> Bones => _bones;
     public IReadOnlyList<BoneTransform> RagdollBones => _ragdollBones.ToList();
-    public bool IsFaceUp => _isFaceUp;
+    public bool IsFaceUp { get; private set; }
 
     private BasePlayer _player = null;
     private RagdollFallInput _movementInput = null;
@@ -45,7 +44,6 @@ public class RagdollController : BasePlayerController
     private List<Transform> _bones;
 
     private bool _playerIsFallingFlag = false;
-    private bool _isFaceUp = false;
 
     public override void Initialize(BasePlayer player)
     {
@@ -102,7 +100,7 @@ public class RagdollController : BasePlayerController
         {
             _playerIsFallingFlag = false;
 
-            _isFaceUp = _hipsTransform.forward.y > 0;
+            IsFaceUp = _hipsTransform.forward.y > 0;
 
             AlignPlayerRotationByHips();
             AlignPlayerPositionByHips();
@@ -127,7 +125,7 @@ public class RagdollController : BasePlayerController
     {
         var desiredPosition = _hipsTransform.up;
 
-        if (_isFaceUp)
+        if (IsFaceUp)
         {
             desiredPosition *= -1;
         }
@@ -196,7 +194,7 @@ public class RagdollController : BasePlayerController
     public override void Clear()
     {
         _playerIsFallingFlag = false;
-        _isFaceUp = false;
+        IsFaceUp = false;
 
         _ragdollBones = null;
         _bones = null;

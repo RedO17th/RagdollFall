@@ -148,8 +148,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 4496122979337133153}
-  _faceUpStandUpAName: StandUP_FaceUP
-  _faceDownStandUpAName: StandUP_FaceDown
+  _eventTransmitter: {fileID: 644437402262659032}
   _animations:
   - _type: 2
     _animationName: StandUP_FaceUP
@@ -1654,6 +1653,18 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3574490606716016499, guid: 878e38f8f56fcf94d8eb56bd8ef84a74, type: 3}
   m_PrefabInstance: {fileID: 5932833057975733202}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &644437402262659032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7191840132684700833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d1234d848bb1604da8a69d0244ec843, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &7531528016319579675 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4238156527312506313, guid: 878e38f8f56fcf94d8eb56bd8ef84a74, type: 3}

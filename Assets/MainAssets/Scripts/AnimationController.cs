@@ -18,6 +18,7 @@ public class Animations
 public class AnimationController : BasePlayerController
 {
     [SerializeField] private Animator _animator;
+    [SerializeField] private AnimationEventTransmitter _eventTransmitter;
 
     [SerializeField] private Animations[] _animations;
 
@@ -25,6 +26,8 @@ public class AnimationController : BasePlayerController
     [SerializeField] private string _walkingAName;
     [SerializeField] private string _standUpUpTName;
     [SerializeField] private string _standUpDTName;
+
+    public event Action OnPlayerGotUp;
 
     private BasePlayer _player = null;
 
@@ -92,28 +95,29 @@ public class AnimationController : BasePlayerController
 
         _animator.enabled = true;
 
-        _player.OnStandUp += ProcessStandUp;
+        _eventTransmitter.OnStandUpEnd += ProcessStandUpAnimationEnd;
 
         _movementController.OnMoveEvent += ProcessMoveState;
         _movementController.OnStopEvent += ProcessStopState;
     }
 
-    private void ProcessMoveState() => _animator.SetBool(_walkingAName, true);
-    private void ProcessStopState() => _animator.SetBool(_walkingAName, false);
-
-    //[Ref]
-    private void ProcessStandUp(bool isUp)
+    public void ProcessStandUp(bool isUp)
     {
-        _animator.SetBool(_walkingAName, false);
+        ProcessStopState();
 
         var triggerName = isUp ? _standUpUpTName : _standUpDTName;
 
         _animator.SetTrigger(triggerName);
     }
 
+    private void ProcessStandUpAnimationEnd() => OnPlayerGotUp?.Invoke();
+
+    private void ProcessMoveState() => _animator.SetBool(_walkingAName, true);
+    private void ProcessStopState() => _animator.SetBool(_walkingAName, false);
+
     public override void Disable()
     {
-        _player.OnStandUp -= ProcessStandUp;
+        _eventTransmitter.OnStandUpEnd -= ProcessStandUpAnimationEnd;
 
         _movementController.OnMoveEvent -= ProcessMoveState;
         _movementController.OnStopEvent -= ProcessStopState;

@@ -16,8 +16,6 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
 
     public event Action OnFalling;
 
-    public event Action<bool> OnStandUp;
-
     public Vector3 Forward => _transform.forward;
     public Vector3 Position => _transform.position;
     public Quaternion Rotation => _transform.rotation;
@@ -98,6 +96,4 @@ public class BasePlayer : MonoBehaviour, IEnabable, IDisabable
     #endregion
 
     public void EnableRagdoll() => OnFalling?.Invoke();
-
-    public void StandUp(bool side) => OnStandUp?.Invoke(side);
 }

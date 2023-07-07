@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.XR;
 
@@ -32,8 +35,7 @@ public class PlayerStandUpState : BaseState
 
         _targetBoneTransforms = GetBonesSnapshot();
 
-        //[Ref]
-        _player.StartCoroutine(ResetBonesRoutine());
+        _player.StartCoroutine(ControllResetBonesRoutine());
     }
 
     private IReadOnlyList<BoneTransform> GetBonesSnapshot()
@@ -44,6 +46,22 @@ public class PlayerStandUpState : BaseState
     }
 
     public override void Tick() { }
+
+    public IEnumerator ControllResetBonesRoutine()
+    {
+        yield return _player.StartCoroutine(ResetBonesRoutine());
+
+        _animatorController.Enable();
+        _animatorController.OnPlayerGotUp += ProcessOnPlayerGotUpEvent;
+        _animatorController.ProcessStandUp(_ragdollController.IsFaceUp);
+    }
+
+    private void ProcessOnPlayerGotUpEvent()
+    {
+        _animatorController.OnPlayerGotUp -= ProcessOnPlayerGotUpEvent;
+
+        SendOnChangeEvent<PlayerIdleState>();
+    }
 
     public IEnumerator ResetBonesRoutine()
     {
@@ -61,10 +79,6 @@ public class PlayerStandUpState : BaseState
 
             yield return null;
         }
-
-        //Обдумать, что далее..
-        _animatorController.Enable();
-        _player.StandUp(_ragdollController.IsFaceUp);
     }
 
     public override void Exit()
